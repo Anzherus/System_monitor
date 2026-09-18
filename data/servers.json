@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "server-01",
+    "os": "Windows Server",
+    "ip": "192.168.35.70",
+    "environment": "development",
+    "cpu": 32,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "server-02",
+    "os": "Ubuntu",
+    "ip": "192.168.179.41",
+    "environment": "development",
+    "cpu": 4,
+    "ram": 2,
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "server-03",
+    "os": "Linux",
+    "ip": "192.168.239.135",
+    "environment": "production",
+    "cpu": 16,
+    "ram": 16,
+    "status": "inactive"
+  },
+  {
+    "id": 4,
+    "name": "server-04",
+    "os": "FreeBSD",
+    "ip": "192.168.69.50",
+    "environment": "production",
+    "cpu": 2,
+    "ram": 2,
+    "status": "active"
+  },
+  {
+    "id": 5,
+    "name": "server-05",
+    "os": "Ubuntu",
+    "ip": "192.168.112.100",
+    "environment": "production",
+    "cpu": 16,
+    "ram": 2,
+    "status": "active"
+  }
+]

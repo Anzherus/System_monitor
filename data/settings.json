@@ -1,0 +1,10 @@
+{
+  "max_threads": 4,
+  "processes": 4,
+  "logs_path": "C:\\Users\\Anzherus\\Desktop\\Подготовка к собесу\\Project_practical\\logs",
+  "data_path": "C:\\Users\\Anzherus\\Desktop\\Подготовка к собесу\\Project_practical\\data",
+  "reports_path": "C:\\Users\\Anzherus\\Desktop\\Подготовка к собесу\\Project_practical\\reports",
+  "anomaly_threshold": 2.0,
+  "test_servers": 50,
+  "test_logs": 100000
+}
