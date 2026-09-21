@@ -1,14 +1,19 @@
-import functools, itertools, time
+import functools
+import itertools
+import logging
+import time
+from collections import deque
 from contextlib import contextmanager
-from typing import Iterable, Iterator, List, Tuple
+from typing import Iterable, Iterator
+
+logger = logging.getLogger(__name__)
 
 
 class LogRecordIterator:
     def __init__(self, records: Iterable[dict], page_size: int = 100):
-        self._records = records
-        self._page_size = page_size
-        self._index = 0
-        self._buffer: List[dict] = []
+        self._records = iter(records)
+        self._page_size = max(1, page_size)
+        self._buffer: deque = deque()
 
     def __iter__(self) -> "LogRecordIterator":
         return self
@@ -18,31 +23,43 @@ class LogRecordIterator:
             chunk = list(itertools.islice(self._records, self._page_size))
             if not chunk:
                 raise StopIteration
-            self._buffer = chunk
-        return self._buffer.pop(0)
+            self._buffer.extend(chunk)
+        return self._buffer.popleft()
 
 
 def chain_files(file_iterables: Iterable[Iterable[dict]]) -> Iterator[dict]:
     return itertools.chain.from_iterable(file_iterables)
 
 
-def group_by_level(records: Iterable[dict]) -> Iterator[Tuple[str, Iterator[dict]]]:
-    key = lambda r: r.get("level", "UNKNOWN")
-    for level, group in itertools.groupby(records, key=key):
-        yield level, group
+def detect_floods(records: Iterable[dict], min_run: int = 5) -> Iterator[dict]:
+    key = lambda r: (r.get("server"), r.get("message"))
+    for (srv, msg), grp in itertools.groupby(records, key=key):
+        n = sum(1 for _ in grp)
+        if n >= min_run:
+            yield {"server": srv, "message": msg, "count": n}
 
 
-@functools.lru_cache(maxsize=128)
+@functools.lru_cache(maxsize=16)
 def cached_severity_weight(level: str) -> int:
     return {"INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}.get(level, 0)
 
 
-def total_weight(records: Iterable[dict]) -> int:
-    return functools.reduce(lambda acc, r: acc + cached_severity_weight(r.get("level", "")), records, 0)
+def severity_total(level_counts: dict) -> int:
+    return functools.reduce(
+        lambda acc, kv: acc + cached_severity_weight(kv[0]) * kv[1],
+        level_counts.items(),
+        0,
+    )
 
 
 def format_record(prefix: str, record: dict) -> str:
-    return f"{prefix} {record.get('server', '?')} | {record.get('level', '?')}"
+    base = (f"{record.get('date', '?')} "
+            f"{str(record.get('time', '?'))[:8]} | "
+            f"{record.get('server', '?'):>12} | "
+            f"{record.get('level', '?'):<8} | "
+            f"{record.get('message', '')}")
+    return f"{prefix} {base}" if prefix else base
+
 
 
 format_error = functools.partial(format_record, "[ERR]")
@@ -55,4 +72,4 @@ def timer(label: str = ""):
         yield
     finally:
         elapsed = time.perf_counter() - start
-        print(f"{label}: {elapsed:.2f} сек")
+        logger.info("%s: %.2f сек", label or "timer", elapsed)

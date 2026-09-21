@@ -3,50 +3,500 @@
     "id": 1,
     "name": "server-01",
     "os": "Windows Server",
-    "ip": "192.168.35.70",
+    "ip": "192.168.236.101",
     "environment": "development",
     "cpu": 32,
     "ram": 16,
-    "status": "active"
+    "status": "inactive"
   },
   {
     "id": 2,
     "name": "server-02",
-    "os": "Ubuntu",
-    "ip": "192.168.179.41",
+    "os": "Windows Server",
+    "ip": "192.168.202.232",
     "environment": "development",
-    "cpu": 4,
-    "ram": 2,
+    "cpu": 8,
+    "ram": 4,
     "status": "active"
   },
   {
     "id": 3,
     "name": "server-03",
-    "os": "Linux",
-    "ip": "192.168.239.135",
-    "environment": "production",
-    "cpu": 16,
+    "os": "Windows Server",
+    "ip": "192.168.193.241",
+    "environment": "staging",
+    "cpu": 32,
     "ram": 16,
     "status": "inactive"
   },
   {
     "id": 4,
     "name": "server-04",
-    "os": "FreeBSD",
-    "ip": "192.168.69.50",
+    "os": "Windows Server",
+    "ip": "192.168.253.22",
     "environment": "production",
     "cpu": 2,
-    "ram": 2,
-    "status": "active"
+    "ram": 32,
+    "status": "maintenance"
   },
   {
     "id": 5,
     "name": "server-05",
     "os": "Ubuntu",
-    "ip": "192.168.112.100",
+    "ip": "192.168.9.50",
+    "environment": "development",
+    "cpu": 16,
+    "ram": 16,
+    "status": "inactive"
+  },
+  {
+    "id": 6,
+    "name": "server-06",
+    "os": "Linux",
+    "ip": "192.168.90.192",
+    "environment": "production",
+    "cpu": 2,
+    "ram": 2,
+    "status": "maintenance"
+  },
+  {
+    "id": 7,
+    "name": "server-07",
+    "os": "Linux",
+    "ip": "192.168.190.189",
+    "environment": "staging",
+    "cpu": 4,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 8,
+    "name": "server-08",
+    "os": "Linux",
+    "ip": "192.168.23.144",
+    "environment": "staging",
+    "cpu": 8,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 9,
+    "name": "server-09",
+    "os": "Windows Server",
+    "ip": "192.168.211.161",
+    "environment": "production",
+    "cpu": 32,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 10,
+    "name": "server-10",
+    "os": "Linux",
+    "ip": "192.168.76.225",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 11,
+    "name": "server-11",
+    "os": "FreeBSD",
+    "ip": "192.168.55.238",
+    "environment": "staging",
+    "cpu": 2,
+    "ram": 32,
+    "status": "unavailable"
+  },
+  {
+    "id": 12,
+    "name": "server-12",
+    "os": "FreeBSD",
+    "ip": "192.168.227.35",
+    "environment": "staging",
+    "cpu": 4,
+    "ram": 4,
+    "status": "unavailable"
+  },
+  {
+    "id": 13,
+    "name": "server-13",
+    "os": "Ubuntu",
+    "ip": "192.168.156.20",
+    "environment": "production",
+    "cpu": 4,
+    "ram": 32,
+    "status": "unavailable"
+  },
+  {
+    "id": 14,
+    "name": "server-14",
+    "os": "Windows Server",
+    "ip": "192.168.215.228",
     "environment": "production",
     "cpu": 16,
+    "ram": 4,
+    "status": "maintenance"
+  },
+  {
+    "id": 15,
+    "name": "server-15",
+    "os": "FreeBSD",
+    "ip": "192.168.97.139",
+    "environment": "development",
+    "cpu": 8,
+    "ram": 8,
+    "status": "inactive"
+  },
+  {
+    "id": 16,
+    "name": "server-16",
+    "os": "Ubuntu",
+    "ip": "192.168.187.3",
+    "environment": "staging",
+    "cpu": 32,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 17,
+    "name": "server-17",
+    "os": "Linux",
+    "ip": "192.168.66.39",
+    "environment": "development",
+    "cpu": 16,
+    "ram": 4,
+    "status": "inactive"
+  },
+  {
+    "id": 18,
+    "name": "server-18",
+    "os": "Windows Server",
+    "ip": "192.168.39.197",
+    "environment": "staging",
+    "cpu": 16,
+    "ram": 16,
+    "status": "inactive"
+  },
+  {
+    "id": 19,
+    "name": "server-19",
+    "os": "Ubuntu",
+    "ip": "192.168.230.179",
+    "environment": "development",
+    "cpu": 8,
     "ram": 2,
     "status": "active"
+  },
+  {
+    "id": 20,
+    "name": "server-20",
+    "os": "Ubuntu",
+    "ip": "192.168.43.20",
+    "environment": "development",
+    "cpu": 8,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 21,
+    "name": "server-21",
+    "os": "Windows Server",
+    "ip": "192.168.221.145",
+    "environment": "production",
+    "cpu": 16,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 22,
+    "name": "server-22",
+    "os": "Linux",
+    "ip": "192.168.141.233",
+    "environment": "development",
+    "cpu": 4,
+    "ram": 16,
+    "status": "inactive"
+  },
+  {
+    "id": 23,
+    "name": "server-23",
+    "os": "Linux",
+    "ip": "192.168.128.111",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 8,
+    "status": "active"
+  },
+  {
+    "id": 24,
+    "name": "server-24",
+    "os": "FreeBSD",
+    "ip": "192.168.32.98",
+    "environment": "staging",
+    "cpu": 16,
+    "ram": 4,
+    "status": "inactive"
+  },
+  {
+    "id": 25,
+    "name": "server-25",
+    "os": "Windows Server",
+    "ip": "192.168.244.238",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 26,
+    "name": "server-26",
+    "os": "Ubuntu",
+    "ip": "192.168.10.226",
+    "environment": "staging",
+    "cpu": 8,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 27,
+    "name": "server-27",
+    "os": "Linux",
+    "ip": "192.168.124.181",
+    "environment": "development",
+    "cpu": 32,
+    "ram": 2,
+    "status": "unavailable"
+  },
+  {
+    "id": 28,
+    "name": "server-28",
+    "os": "Windows Server",
+    "ip": "192.168.116.69",
+    "environment": "staging",
+    "cpu": 16,
+    "ram": 8,
+    "status": "unavailable"
+  },
+  {
+    "id": 29,
+    "name": "server-29",
+    "os": "Linux",
+    "ip": "192.168.193.159",
+    "environment": "production",
+    "cpu": 16,
+    "ram": 32,
+    "status": "maintenance"
+  },
+  {
+    "id": 30,
+    "name": "server-30",
+    "os": "Linux",
+    "ip": "192.168.141.155",
+    "environment": "staging",
+    "cpu": 2,
+    "ram": 32,
+    "status": "inactive"
+  },
+  {
+    "id": 31,
+    "name": "server-31",
+    "os": "FreeBSD",
+    "ip": "192.168.37.212",
+    "environment": "staging",
+    "cpu": 8,
+    "ram": 16,
+    "status": "active"
+  },
+  {
+    "id": 32,
+    "name": "server-32",
+    "os": "Linux",
+    "ip": "192.168.253.251",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 33,
+    "name": "server-33",
+    "os": "Linux",
+    "ip": "192.168.250.206",
+    "environment": "development",
+    "cpu": 16,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 34,
+    "name": "server-34",
+    "os": "Ubuntu",
+    "ip": "192.168.175.122",
+    "environment": "development",
+    "cpu": 16,
+    "ram": 2,
+    "status": "maintenance"
+  },
+  {
+    "id": 35,
+    "name": "server-35",
+    "os": "FreeBSD",
+    "ip": "192.168.182.196",
+    "environment": "production",
+    "cpu": 16,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 36,
+    "name": "server-36",
+    "os": "Windows Server",
+    "ip": "192.168.117.130",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 16,
+    "status": "inactive"
+  },
+  {
+    "id": 37,
+    "name": "server-37",
+    "os": "Ubuntu",
+    "ip": "192.168.28.79",
+    "environment": "staging",
+    "cpu": 8,
+    "ram": 2,
+    "status": "unavailable"
+  },
+  {
+    "id": 38,
+    "name": "server-38",
+    "os": "Linux",
+    "ip": "192.168.152.76",
+    "environment": "production",
+    "cpu": 8,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 39,
+    "name": "server-39",
+    "os": "Ubuntu",
+    "ip": "192.168.216.240",
+    "environment": "staging",
+    "cpu": 16,
+    "ram": 2,
+    "status": "unavailable"
+  },
+  {
+    "id": 40,
+    "name": "server-40",
+    "os": "Windows Server",
+    "ip": "192.168.59.166",
+    "environment": "staging",
+    "cpu": 32,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 41,
+    "name": "server-41",
+    "os": "Windows Server",
+    "ip": "192.168.227.69",
+    "environment": "staging",
+    "cpu": 2,
+    "ram": 4,
+    "status": "unavailable"
+  },
+  {
+    "id": 42,
+    "name": "server-42",
+    "os": "Ubuntu",
+    "ip": "192.168.50.226",
+    "environment": "development",
+    "cpu": 8,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 43,
+    "name": "server-43",
+    "os": "Ubuntu",
+    "ip": "192.168.136.18",
+    "environment": "staging",
+    "cpu": 4,
+    "ram": 2,
+    "status": "maintenance"
+  },
+  {
+    "id": 44,
+    "name": "server-44",
+    "os": "Ubuntu",
+    "ip": "192.168.176.150",
+    "environment": "production",
+    "cpu": 2,
+    "ram": 4,
+    "status": "active"
+  },
+  {
+    "id": 45,
+    "name": "server-45",
+    "os": "Ubuntu",
+    "ip": "192.168.18.164",
+    "environment": "production",
+    "cpu": 2,
+    "ram": 2,
+    "status": "unavailable"
+  },
+  {
+    "id": 46,
+    "name": "server-46",
+    "os": "FreeBSD",
+    "ip": "192.168.119.100",
+    "environment": "development",
+    "cpu": 2,
+    "ram": 32,
+    "status": "active"
+  },
+  {
+    "id": 47,
+    "name": "server-47",
+    "os": "Linux",
+    "ip": "192.168.86.229",
+    "environment": "production",
+    "cpu": 2,
+    "ram": 32,
+    "status": "maintenance"
+  },
+  {
+    "id": 48,
+    "name": "server-48",
+    "os": "Windows Server",
+    "ip": "192.168.15.239",
+    "environment": "staging",
+    "cpu": 4,
+    "ram": 16,
+    "status": "unavailable"
+  },
+  {
+    "id": 49,
+    "name": "server-49",
+    "os": "Linux",
+    "ip": "192.168.104.45",
+    "environment": "development",
+    "cpu": 8,
+    "ram": 4,
+    "status": "unavailable"
+  },
+  {
+    "id": 50,
+    "name": "server-50",
+    "os": "FreeBSD",
+    "ip": "192.168.121.201",
+    "environment": "staging",
+    "cpu": 32,
+    "ram": 8,
+    "status": "unavailable"
   }
 ]

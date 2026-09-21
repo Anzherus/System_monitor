@@ -1,59 +1,164 @@
+"""
+анализ агрегатов.
+"""
 import logging
-from typing import List
+from typing import Iterable, Optional
+
 import pandas as pd
+
+from modules.servers import compute_priority
 
 logger = logging.getLogger(__name__)
 
+# Метрики, по которым имеет смысл считать avg_* в сводных таблицах
+NUMERIC_METRICS = ("cpu", "ram", "disk", "net")
+
 
 class PandasAnalyzer:
+
     def __init__(self):
-        self.df: pd.DataFrame = pd.DataFrame()
+        self.servers_df = pd.DataFrame()
+        self.levels_df = pd.DataFrame()
+        self.dates_df = pd.DataFrame()
+        self.hours_df = pd.DataFrame()
+        self.errors_df = pd.DataFrame()
 
-    def build(self, records: List[dict]) -> None:
-        if not records:
-            self.df = pd.DataFrame()
-            return
-        rows = []
+    def build(self, per_server, level_counts, per_date, per_hour,
+              error_messages, per_server_numeric=None):
+        self.servers_df = pd.DataFrame(
+            [{"server": s, **d} for s, d in per_server.items()]
+        ) if per_server else pd.DataFrame(
+            columns=["server", "total", "errors", "critical", "warnings"])
+
+        if per_server_numeric and not self.servers_df.empty:
+            for metric in NUMERIC_METRICS:
+                col = f"avg_{metric}"
+                mapping = {}
+                for srv, stats in per_server_numeric.items():
+                    mean_val = stats.get(metric, {}).get("mean")
+                    if mean_val is not None:
+                        mapping[srv] = mean_val
+                
+                if mapping:
+                    series = self.servers_df["server"].map(mapping)
+                    self.servers_df[col] = series
+                else:
+                    self.servers_df[col] = None
+
+        self.levels_df = pd.DataFrame(
+            [{"level": k, "count": v} for k, v in level_counts.items()]
+        )
+        self.dates_df = pd.DataFrame(
+            [{"date": k, "count": v} for k, v in per_date.items()]
+        )
+        self.hours_df = pd.DataFrame(
+            [{"hour": k, "count": v} for k, v in per_hour.items()]
+        )
+        self.errors_df = pd.DataFrame(
+            [{"message": m, "count": c} for m, c in error_messages.items()]
+        )
+
+    @classmethod
+    def from_records(cls, records: Iterable[dict]) -> "PandasAnalyzer":
+        per_server, level_counts = {}, {}
+        per_date, per_hour = {}, {}
+        errors = {}
+        per_server_numeric = {}
+        
+        from modules.analyzer import PerServerNumericAnalyzer
+        psn = PerServerNumericAnalyzer()
+        
         for r in records:
-            rows.append({
-                "date": r["date"],
-                "server": r["server"],
-                "level": r["level"],
-                "message": r["message"],
-            })
-        self.df = pd.DataFrame(rows)
+            srv = r["server"]
+            d = per_server.setdefault(
+                srv, {"total": 0, "errors": 0, "critical": 0, "warnings": 0})
+            d["total"] += 1
+            lvl = r["level"]
+            level_counts[lvl] = level_counts.get(lvl, 0) + 1
+            if lvl == "ERROR":
+                d["errors"] += 1
+                errors[r["message"]] = errors.get(r["message"], 0) + 1
+            elif lvl == "CRITICAL":
+                d["critical"] += 1
+            elif lvl == "WARNING":
+                d["warnings"] += 1
+            per_date[r["date"]] = per_date.get(r["date"], 0) + 1
+            hour = r["time"][:2]
+            per_hour[hour] = per_hour.get(hour, 0) + 1
+            # Также фидим числовые метрики
+            psn.feed(r)
+        
+        pa = cls()
+        per_server_numeric_data = psn.per_server()
+        pa.build(per_server, level_counts, per_date, per_hour, errors, per_server_numeric_data)
+        return pa
 
-    def by_server(self) -> pd.DataFrame:
-        if self.df.empty:
-            return self.df
-        g = self.df.groupby("server")
-        agg = g.agg(
-            total=("level", "size"),
-            errors=("level", lambda s: (s == "ERROR").sum()),
-            warnings=("level", lambda s: (s == "WARNING").sum()),
-            critical=("level", lambda s: (s == "CRITICAL").sum()),
-        ).reset_index()
-        return agg.sort_values("errors", ascending=False)
+    # группировка/сортировка
+    def by_server(self, top: Optional[int] = None) -> pd.DataFrame:
+        if self.servers_df.empty:
+            return self.servers_df
+        df = (self.servers_df
+              .sort_values(["errors", "critical"], ascending=False)
+              .reset_index(drop=True))
+        return df.head(top) if top else df
 
     def by_level(self) -> pd.DataFrame:
-        if self.df.empty:
-            return self.df
-        return (self.df.groupby("level").size()
-                .reset_index(name="count")
-                .sort_values("count", ascending=False))
+        if self.levels_df.empty:
+            return self.levels_df
+        return (self.levels_df
+                .sort_values("count", ascending=False)
+                .reset_index(drop=True))
 
     def by_date(self) -> pd.DataFrame:
-        if self.df.empty:
-            return self.df
-        return (self.df.groupby("date").size()
-                .reset_index(name="count")
-                .sort_values("date"))
+        return self.dates_df.sort_values("date").reset_index(drop=True)
+
+    def by_time_period(self) -> pd.DataFrame:
+        return self.hours_df.sort_values("hour").reset_index(drop=True)
 
     def top_error_messages(self, n: int = 10) -> pd.DataFrame:
-        if self.df.empty:
-            return self.df
-        errors = self.df[self.df["level"] == "ERROR"]
-        return (errors.groupby("message").size()
-                .reset_index(name="count")
+        if self.errors_df.empty:
+            return self.errors_df
+        return (self.errors_df
                 .sort_values("count", ascending=False)
-                .head(n))
+                .head(n)
+                .reset_index(drop=True))
+
+    # фильтрация
+    def filter_min_errors(self, threshold: int = 1) -> pd.DataFrame:
+        if self.servers_df.empty:
+            return self.servers_df
+        # errors существует
+        if "errors" not in self.servers_df.columns:
+            return pd.DataFrame(columns=self.servers_df.columns)
+        return self.servers_df[self.servers_df["errors"] >= threshold]
+
+    # статистика и приоритеты
+    def problem_servers(self, top: int = 10) -> pd.DataFrame:
+        if self.servers_df.empty:
+            return self.servers_df
+        df = self.servers_df.copy()
+        df["score"] = df["critical"] * 3 + df["errors"] * 2 + df["warnings"]
+        df["priority"] = df.apply(
+            lambda r: compute_priority(int(r["errors"]), int(r["critical"]),
+                                       int(r["warnings"]), int(r["total"])).value,
+            axis=1,
+        )
+        return (df.sort_values(["score", "critical"], ascending=False)
+                  .drop(columns="score")
+                  .head(top)
+                  .reset_index(drop=True))
+
+    def describe(self) -> dict:
+        if self.servers_df.empty:
+            return {}
+        cols = [c for c in ("total", "errors", "critical", "warnings")
+                if c in self.servers_df.columns]
+        if not cols:
+            return {}
+        numeric = self.servers_df[cols]
+        return {
+            "mean": numeric.mean().round(2).to_dict(),
+            "median": numeric.median().round(2).to_dict(),
+            "std": numeric.std().round(2).to_dict(),
+            "max": numeric.max().to_dict(),
+        }

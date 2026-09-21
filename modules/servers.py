@@ -1,11 +1,44 @@
+"""Управление серверами и приоритезация."""
 import logging
 from dataclasses import dataclass, asdict
-from typing import Iterable, List, Optional
+from enum import Enum
+from typing import List, Optional
 from config import Settings
 from modules.storage import load_json, save_json
 from utils.validators import validate_server
 
 logger = logging.getLogger(__name__)
+
+
+class Priority(str, Enum):
+    NORMAL = "NORMAL"
+    WARNING = "WARNING"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+def compute_priority(errors: int, critical: int,
+                     warnings: int, total: int = 0) -> Priority:
+    if total > 0:
+        crit_rate = critical / total
+        err_rate = errors / total
+        warn_rate = warnings / total
+
+        if crit_rate >= 0.01 or (critical >= 1000 and crit_rate >= 0.005):
+            return Priority.CRITICAL
+        if err_rate >= 0.05 or crit_rate >= 0.002:
+            return Priority.HIGH
+        if err_rate >= 0.02 or warn_rate >= 0.20:
+            return Priority.WARNING
+        return Priority.NORMAL
+
+    if critical >= 10 or errors >= 100:
+        return Priority.CRITICAL
+    if critical >= 1 or errors >= 20:
+        return Priority.HIGH
+    if errors >= 5 or warnings >= 50:
+        return Priority.WARNING
+    return Priority.NORMAL
 
 
 @dataclass
@@ -39,7 +72,8 @@ class ServerManager:
             if not ok:
                 logger.warning("Пропущен некорректный сервер %s: %s", item, err)
                 continue
-            self.servers.append(Server(**item))
+            self.servers.append(Server(**{k: item[k] for k in (
+                "id", "name", "os", "ip", "environment", "cpu", "ram", "status")}))
         logger.info("Загружено %d серверов", len(self.servers))
         return len(self.servers)
 
@@ -61,4 +95,3 @@ class ServerManager:
             if s.name == name:
                 return s
         return None
-    

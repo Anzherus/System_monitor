@@ -1,16 +1,21 @@
-import logging, os, random
+"""
+Генерация тестовой инфраструктуры.
+"""
+import logging
+import os
+import random
 from datetime import datetime, timedelta
 from typing import List
+
 from config import Settings
 from modules.servers import Server, ServerManager
-from modules.storage import save_json
 
 logger = logging.getLogger(__name__)
 
 OS_CHOICES = ["Linux", "Windows Server", "FreeBSD", "Ubuntu"]
 ENVS = ["production", "staging", "development"]
-STATUSES = ["active", "active", "active", "inactive", "maintenance"]
-LEVELS = ["INFO"] * 80 + ["WARNING"] * 13 + ["ERROR"] * 6 + ["CRITICAL"]
+STATUSES = ["active", "active", "active", "inactive", "maintenance", "unavailable"]
+
 ERROR_MSGS = [
     "Database connection timeout",
     "Disk I/O error",
@@ -18,13 +23,30 @@ ERROR_MSGS = [
     "Service crashed",
     "Authentication failed",
     "Out of memory",
+    "SSL handshake failure",
+    "Connection reset by peer",
+    "Segmentation fault",
+    "Configuration file missing",
 ]
-WARN_MSGS = [
-    "Memory usage high",
-    "CPU load elevated",
-    "Disk space low",
-    "Latency spike",
-]
+METRIC_NAMES = ["CPU usage", "Memory usage", "Disk usage", "Network throughput"]
+
+
+def _weighted_choice(pairs) -> str:
+    total = sum(w for _, w in pairs)
+    r = random.randint(1, total)
+    acc = 0
+    for item, w in pairs:
+        acc += w
+        if r <= acc:
+            return item
+    return pairs[-1][0]
+
+
+def _metric_value() -> int:
+    
+    if random.random() < 0.01:
+        return random.randint(90, 100)
+    return max(1, min(89, int(random.gauss(50, 15))))
 
 
 def generate_servers(settings: Settings, count: int = None) -> List[Server]:
@@ -44,14 +66,17 @@ def generate_servers(settings: Settings, count: int = None) -> List[Server]:
     return servers
 
 
-def _make_line(ts: datetime, server: str) -> str:
-    level = random.choice(LEVELS)
+def _make_line(ts: datetime, server: str, error_bias: float = 1.0) -> str:
+    level = _weighted_choice([
+        ("INFO", 820),
+        ("WARNING", 130),
+        ("ERROR", int(48 * error_bias)),
+        ("CRITICAL", int(2 * error_bias)),
+    ])
     if level == "INFO":
-        metric = random.choice(["CPU usage", "Memory usage", "Disk usage", "Network throughput"])
-        value = random.randint(1, 100)
-        msg = f"{metric}: {value}"
+        msg = f"{random.choice(METRIC_NAMES)}: {_metric_value()}"
     elif level == "WARNING":
-        msg = random.choice(WARN_MSGS) + f": {random.randint(60, 95)}"
+        msg = f"{random.choice(METRIC_NAMES)}: {random.randint(75, 92)} (high)"
     elif level == "ERROR":
         msg = random.choice(ERROR_MSGS)
     else:
@@ -64,33 +89,48 @@ def generate_logs(settings: Settings,
                   total_records: int = None,
                   files: int = None) -> int:
     total_records = total_records or settings.test_logs
-    files = files or max(1, min(100, len(servers) * 2))
+    files = max(1, files or len(servers))
     os.makedirs(settings.logs_path, exist_ok=True)
 
+   
     for old in os.listdir(settings.logs_path):
         if old.startswith("server_") and old.endswith(".log"):
-            os.remove(os.path.join(settings.logs_path, old))
+            try:
+                os.remove(os.path.join(settings.logs_path, old))
+            except OSError as exc:
+                logger.warning("Не удалось удалить %s: %s", old, exc)
+
+    server_bias = {s.name: random.uniform(0.5, 2.5) for s in servers}
+
     per_file = max(1, total_records // files)
     base_time = datetime.now() - timedelta(days=3)
     written = 0
 
     for fi in range(files):
-        path = os.path.join(settings.logs_path, f"server_{fi + 1:03d}.log")
+        srv = servers[fi % len(servers)]
+        idx = fi // len(servers) + 1
+        safe = srv.name.replace("-", "_")
+        path = os.path.join(settings.logs_path, f"{safe}_{idx:03d}.log")
+
         ts = base_time + timedelta(minutes=fi * 5)
-        with open(path, "w", encoding="utf-8") as f:
-            for _ in range(per_file):
-                ts += timedelta(seconds=random.randint(1, 30))
-                srv = random.choice(servers).name
-                f.write(_make_line(ts, srv) + "\n")
-                written += 1
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                for _ in range(per_file):
+                    ts += timedelta(seconds=random.randint(1, 30))
+                    f.write(_make_line(ts, srv.name,
+                                       server_bias[srv.name]) + "\n")
+                    written += 1
+        except OSError as exc:
+            logger.error("Не удалось записать %s: %s", path, exc)
+            break
+
     logger.info("Сгенерировано %d записей в %d файлах", written, files)
     return written
 
 
-def generate_infrastructure(settings: Settings,
-                            servers_count: int = None,
-                            logs_count: int = None) -> None:
+def generate_infrastructure(settings, servers_count=None,
+                            logs_count=None, files_count=None):
     mgr = ServerManager(settings)
     mgr.servers = generate_servers(settings, servers_count)
     mgr.save()
-    generate_logs(settings, mgr.servers, logs_count)
+    generate_logs(settings, mgr.servers, logs_count, files_count)

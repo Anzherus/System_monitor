@@ -1,19 +1,23 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-venv/
+*.egg-info/
 .venv/
+venv/
 env/
 
-# Логи и данные (чтобы не заливать гигабайты тестовых логов)
-logs/*.log
-!logs/.gitkeep
-data/servers.json
-reports/*
-!reports/.gitkeep
-
-# Настройки IDE
+# IDE
 .vscode/
 .idea/
 *.swp
+
+# Данные (генерируются заново)
+data/servers.json
+data/settings.json
+logs/*.log
+reports/*
+!reports/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

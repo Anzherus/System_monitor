@@ -1,9 +1,24 @@
-import json, logging, os
+import json
+import logging
+import math
+import os
 from typing import List
+
 import pandas as pd
+
 from config import Settings
 
 logger = logging.getLogger(__name__)
+
+
+def _sanitize(obj):
+    if isinstance(obj, dict):
+        return {k: _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize(v) for v in obj]
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    return obj
 
 
 class ReportGenerator:
@@ -13,28 +28,50 @@ class ReportGenerator:
     def _path(self, name: str) -> str:
         return os.path.join(self.settings.reports_path, name)
 
-    def save_summary(self, data: dict) -> None:
-        with open(self._path("summary.json"), "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False, default=str)
-        logger.info("Сохранено summary.json")
+    def _write_json(self, name: str, data) -> None:
+        os.makedirs(self.settings.reports_path, exist_ok=True)
+        try:
+            with open(self._path(name), "w", encoding="utf-8") as f:
+                json.dump(_sanitize(data), f, indent=2,
+                          ensure_ascii=False, default=str)
+            logger.info("Сохранено %s", name)
+        except OSError as exc:
+            logger.error("Не удалось сохранить %s: %s", name, exc)
 
-    def save_errors(self, errors: List[dict]) -> None:
-        with open(self._path("errors.json"), "w", encoding="utf-8") as f:
-            json.dump(errors[:10000], f, indent=2, ensure_ascii=False)
-        logger.info("Сохранено errors.json (%d)", len(errors))
+    def save_summary(self, data: dict) -> None:
+        self._write_json("summary.json", data)
+
+    def save_errors(self, errors: List[dict], limit: int = 50_000) -> None:
+        self._write_json("errors.json", errors[:limit])
+
+    def save_anomalies(self, anomalies: List[dict], limit: int = 1000) -> None:
+        self._write_json("anomalies.json", anomalies[:limit])
+        if len(anomalies) > limit:
+            logger.info("anomalies.json усечён до %d из %d записей",
+                        limit, len(anomalies))
 
     def save_text_report(self, text: str) -> None:
-        with open(self._path("report.txt"), "w", encoding="utf-8") as f:
-            f.write(text)
-        logger.info("Сохранено report.txt")
+        os.makedirs(self.settings.reports_path, exist_ok=True)
+        try:
+            with open(self._path("report.txt"), "w", encoding="utf-8") as f:
+                f.write(text)
+            logger.info("Сохранено report.txt")
+        except OSError as exc:
+            logger.error("Не удалось сохранить report.txt: %s", exc)
+
+    def _save_csv(self, name: str, df: pd.DataFrame) -> None:
+        os.makedirs(self.settings.reports_path, exist_ok=True)
+        try:
+            df.to_csv(self._path(name), index=False)
+            logger.info("Сохранено %s", name)
+        except OSError as exc:
+            logger.error("Не удалось сохранить %s: %s", name, exc)
 
     def save_servers_csv(self, df: pd.DataFrame) -> None:
-        df.to_csv(self._path("servers.csv"), index=False)
-        logger.info("Сохранено servers.csv")
+        self._save_csv("servers.csv", df)
 
     def save_statistics_csv(self, df: pd.DataFrame) -> None:
-        df.to_csv(self._path("statistics.csv"), index=False)
-        logger.info("Сохранено statistics.csv")
-        
+        self._save_csv("statistics.csv", df)
 
-
+    def save_problem_servers_csv(self, df: pd.DataFrame) -> None:
+        self._save_csv("problem_servers.csv", df)

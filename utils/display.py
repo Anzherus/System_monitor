@@ -1,10 +1,8 @@
 from typing import Iterable, Sequence
 
 
-def header(title: str, width: int = 60, char: str = "=") -> None:
-    print(char * width)
+def header(title: str, width: int = 60) -> None:
     print(title.center(width))
-    print(char * width)
 
 
 def table(rows: Sequence[Sequence], headers: Sequence[str] = None) -> None:

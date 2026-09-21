@@ -40,3 +40,269 @@
 2026-09-18 22:07:27,362 INFO Обработано 1330 записей
 2026-09-18 22:07:27,362 INFO Найдено 0 аномалий
 2026-09-18 22:07:27,363 INFO Анализ завершен
+2026-09-21 01:45:22,529 INFO Приложение запущено
+2026-09-21 01:45:22,536 INFO Загружено 5 серверов
+2026-09-21 01:45:29,749 INFO Программа прервана пользователем
+2026-09-21 02:42:11,921 INFO Приложение запущено
+2026-09-21 02:42:11,923 INFO Загружено 5 серверов
+2026-09-21 02:43:02,130 INFO Final test: генерация 1000000 записей в 500 файлах
+2026-09-21 02:43:09,728 INFO Сгенерировано 1000000 записей в 500 файлах
+2026-09-21 02:43:09,728 INFO Final test: загрузка серверов
+2026-09-21 02:43:09,729 INFO Загружено 100 серверов
+2026-09-21 02:43:09,729 INFO Final test: анализ
+2026-09-21 02:43:09,730 INFO Начало анализа
+2026-09-21 02:43:09,743 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:09,743 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:09,743 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:09,743 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:09,743 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:09,744 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 58 некорректных строк
+2026-09-21 02:43:29,306 INFO Анализ логов: 19.58 сек
+2026-09-21 02:43:29,418 INFO Обработано 1000000 записей, аномалий: 26846, флудов: 1449
+2026-09-21 02:43:29,419 INFO Анализ завершён
+2026-09-21 02:43:29,421 INFO Final test: сохранение отчётов
+2026-09-21 02:43:29,450 INFO Сохранено summary.json
+2026-09-21 02:43:29,918 INFO Сохранено errors.json
+2026-09-21 02:43:29,927 INFO Сохранено anomalies.json
+2026-09-21 02:43:29,928 INFO anomalies.json усечён до 1000 из 26846 записей
+2026-09-21 02:43:29,931 INFO Сохранено servers.csv
+2026-09-21 02:43:29,933 INFO Сохранено statistics.csv
+2026-09-21 02:43:29,934 INFO Сохранено problem_servers.csv
+2026-09-21 02:43:29,947 INFO Сохранено report.txt
+2026-09-21 02:43:29,947 INFO Final test завершён за 27.82 сек
+2026-09-21 02:43:29,978 INFO Загружено 100 серверов
+2026-09-21 02:43:38,663 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:38,663 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:38,663 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:38,664 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:38,664 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:38,664 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 78 некорректных строк
+2026-09-21 02:43:39,949 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:39,949 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:39,949 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:39,949 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:39,949 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:39,950 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 84 некорректных строк
+2026-09-21 02:43:40,381 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:40,382 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:40,382 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:40,382 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:40,382 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:40,382 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 90 некорректных строк
+2026-09-21 02:43:41,738 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:41,739 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:41,739 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:41,739 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:41,739 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:41,739 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 96 некорректных строк
+2026-09-21 02:43:48,348 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:43:48,348 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:43:48,348 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:43:48,348 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:43:48,348 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:43:48,349 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 102 некорректных строк
+2026-09-21 02:44:03,362 INFO Начало анализа
+2026-09-21 02:44:03,374 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:44:03,374 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:44:03,375 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:44:03,375 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:44:03,375 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:44:03,375 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 109 некорректных строк
+2026-09-21 02:44:18,539 INFO Анализ логов: 15.18 сек
+2026-09-21 02:44:18,634 INFO Обработано 1000000 записей, аномалий: 26846, флудов: 1449
+2026-09-21 02:44:18,635 INFO Анализ завершён
+2026-09-21 02:44:44,903 INFO Сохранено summary.json
+2026-09-21 02:44:45,406 INFO Сохранено errors.json
+2026-09-21 02:44:45,416 INFO Сохранено anomalies.json
+2026-09-21 02:44:45,416 INFO anomalies.json усечён до 1000 из 26846 записей
+2026-09-21 02:44:45,418 INFO Сохранено servers.csv
+2026-09-21 02:44:45,420 INFO Сохранено statistics.csv
+2026-09-21 02:44:45,421 INFO Сохранено problem_servers.csv
+2026-09-21 02:44:45,432 INFO Сохранено report.txt
+2026-09-21 02:44:52,604 INFO Сгенерировано 100000 записей в 50 файлах
+2026-09-21 02:44:52,611 INFO Загружено 50 серверов
+2026-09-21 02:44:56,317 INFO Benchmark: Multiprocessing — старт
+2026-09-21 02:44:56,952 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:44:56,952 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:44:56,952 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:44:56,952 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:44:56,952 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:44:56,953 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 129 некорректных строк
+2026-09-21 02:44:57,343 INFO Benchmark: Multiprocessing — 1.03 сек (100000 записей)
+2026-09-21 02:44:57,343 INFO Benchmark: Threads — старт
+2026-09-21 02:44:57,366 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:44:57,374 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:44:57,383 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:44:57,391 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:44:57,397 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:44:57,414 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 137 некорректных строк
+2026-09-21 02:44:58,311 INFO Benchmark: Threads — 0.97 сек (100000 записей)
+2026-09-21 02:44:58,311 INFO Benchmark: Sequential — старт
+2026-09-21 02:44:58,322 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:44:58,322 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:44:58,322 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:44:58,322 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:44:58,323 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:44:58,323 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 145 некорректных строк
+2026-09-21 02:44:59,283 INFO Benchmark: Sequential — 0.97 сек (100000 записей)
+2026-09-21 02:44:59,284 INFO Benchmark: Asyncio — старт
+2026-09-21 02:44:59,313 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 02:44:59,320 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 02:44:59,328 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 02:44:59,333 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 02:44:59,340 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 02:44:59,348 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 153 некорректных строк
+2026-09-21 02:45:00,257 INFO Benchmark: Asyncio — 0.97 сек (100000 записей)
+2026-09-21 02:45:00,257 INFO Результаты бенчмарка: {'Multiprocessing': 1.0255050999994637, 'Threads': 0.9676918999994086, 'Sequential': 0.9722040999995443, 'Asyncio': 0.9728651999994327}
+2026-09-21 02:45:13,041 INFO Watch mode старт (интервал 5.0 сек)
+2026-09-21 02:45:13,042 INFO Watch: исходно видно 51 файлов
+2026-09-21 02:47:04,918 INFO Watch mode остановлен
+2026-09-21 02:47:06,775 INFO Приложение завершено
+2026-09-21 20:34:58,749 INFO Приложение запущено
+2026-09-21 20:34:58,755 INFO Загружено 50 серверов
+2026-09-21 20:35:09,585 INFO Финальный тест: генерация 1000000 записей в 500 файлах
+2026-09-21 20:35:16,034 INFO Сгенерировано 1000000 записей в 500 файлах
+2026-09-21 20:35:16,035 INFO Финальный тест: загрузка серверов
+2026-09-21 20:35:16,045 INFO Загружено 100 серверов
+2026-09-21 20:35:16,045 INFO Финальный тест: анализ
+2026-09-21 20:35:16,045 INFO Начало анализа
+2026-09-21 20:35:16,064 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 20:35:16,064 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 20:35:16,064 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 20:35:16,064 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 20:35:16,065 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 20:35:16,065 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 173 некорректных строк
+2026-09-21 20:35:27,580 INFO Анализ логов: 11.53 сек
+2026-09-21 20:35:27,688 INFO Обработано 1000000 записей, аномалий: 25963, флудов: 1460
+2026-09-21 20:35:27,690 INFO Анализ завершён
+2026-09-21 20:35:27,690 INFO Финальный тест: сохранение отчётов
+2026-09-21 20:35:27,723 INFO Сохранено summary.json
+2026-09-21 20:35:28,156 INFO Сохранено errors.json
+2026-09-21 20:35:28,169 INFO Сохранено anomalies.json
+2026-09-21 20:35:28,169 INFO anomalies.json усечён до 1000 из 25963 записей
+2026-09-21 20:35:28,174 INFO Сохранено servers.csv
+2026-09-21 20:35:28,176 INFO Сохранено statistics.csv
+2026-09-21 20:35:28,177 INFO Сохранено problem_servers.csv
+2026-09-21 20:35:28,187 INFO Сохранено report.txt
+2026-09-21 20:35:28,188 INFO Финальный тест завершён за 18.60 сек
+2026-09-21 20:35:28,189 INFO Загружено 100 серверов
+2026-09-21 20:35:37,036 INFO Сгенерировано 100000 записей в 50 файлах
+2026-09-21 20:35:37,043 INFO Загружено 50 серверов
+2026-09-21 20:35:56,500 INFO Приложение завершено
+2026-09-21 21:08:32,774 INFO Приложение запущено
+2026-09-21 21:08:32,775 INFO Загружено 50 серверов
+2026-09-21 21:08:54,455 INFO Сгенерировано 100000 записей в 50 файлах
+2026-09-21 21:08:54,462 INFO Загружено 50 серверов
+2026-09-21 21:15:45,602 INFO Приложение завершено
+2026-09-21 21:16:08,206 INFO Приложение запущено
+2026-09-21 21:16:08,207 INFO Загружено 50 серверов
+2026-09-21 21:16:29,620 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:16:29,621 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:16:29,621 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:16:29,621 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:16:29,621 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:16:29,622 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 203 некорректных строк
+2026-09-21 21:16:30,194 INFO Сканирование логов: 0.58 сек
+2026-09-21 21:16:48,731 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:16:48,731 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:16:48,731 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:16:48,731 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:16:48,732 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:16:48,732 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 210 некорректных строк
+2026-09-21 21:16:54,693 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:16:54,693 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:16:54,693 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:16:54,693 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:16:54,693 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:16:54,694 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 216 некорректных строк
+2026-09-21 21:16:58,433 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:16:58,433 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:16:58,433 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:16:58,433 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:16:58,433 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:16:58,434 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 222 некорректных строк
+2026-09-21 21:17:01,037 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:01,037 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:01,037 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:01,037 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:01,037 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:01,038 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 228 некорректных строк
+2026-09-21 21:17:04,357 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:04,357 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:04,357 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:04,357 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:04,357 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:04,358 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 234 некорректных строк
+2026-09-21 21:17:12,308 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:12,308 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:12,308 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:12,308 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:12,308 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:12,309 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 240 некорректных строк
+2026-09-21 21:17:15,074 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:15,074 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:15,074 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:15,074 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:15,074 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:15,075 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 246 некорректных строк
+2026-09-21 21:17:27,599 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:27,599 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:27,599 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:27,599 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:27,599 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:27,600 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 252 некорректных строк
+2026-09-21 21:17:58,867 INFO Начало анализа
+2026-09-21 21:17:58,877 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:17:58,877 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:17:58,877 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:17:58,877 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:17:58,877 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:17:58,878 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 259 некорректных строк
+2026-09-21 21:17:59,658 INFO Анализ логов: 0.79 сек
+2026-09-21 21:17:59,665 INFO Обработано 100000 записей, аномалий: 2966, флудов: 499
+2026-09-21 21:17:59,667 INFO Анализ завершён
+2026-09-21 21:19:25,581 INFO Сохранено summary.json
+2026-09-21 21:19:25,644 INFO Сохранено errors.json
+2026-09-21 21:19:25,652 INFO Сохранено anomalies.json
+2026-09-21 21:19:25,652 INFO anomalies.json усечён до 1000 из 2966 записей
+2026-09-21 21:19:25,655 INFO Сохранено servers.csv
+2026-09-21 21:19:25,656 INFO Сохранено statistics.csv
+2026-09-21 21:19:25,658 INFO Сохранено problem_servers.csv
+2026-09-21 21:19:25,660 INFO Сохранено report.txt
+2026-09-21 21:20:03,610 INFO Benchmark: Threads — старт
+2026-09-21 21:20:03,631 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:20:03,633 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:20:03,634 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:20:03,639 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:20:03,645 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:20:03,651 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 277 некорректных строк
+2026-09-21 21:20:03,955 INFO Benchmark: Threads — 0.34 сек (100000 записей)
+2026-09-21 21:20:03,956 INFO Benchmark: Sequential — старт
+2026-09-21 21:20:03,966 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:20:03,966 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:20:03,967 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:20:03,967 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:20:03,967 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:20:03,968 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 285 некорректных строк
+2026-09-21 21:20:04,301 INFO Benchmark: Sequential — 0.34 сек (100000 записей)
+2026-09-21 21:20:04,301 INFO Benchmark: Multiprocessing — старт
+2026-09-21 21:20:05,370 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:20:05,370 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:20:05,370 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:20:05,371 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:20:05,371 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:20:05,372 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 293 некорректных строк
+2026-09-21 21:20:06,265 INFO Benchmark: Multiprocessing — 1.96 сек (100000 записей)
+2026-09-21 21:20:06,266 INFO Benchmark: Asyncio — старт
+2026-09-21 21:20:06,282 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:1 пропущена
+2026-09-21 21:20:06,284 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:2 пропущена
+2026-09-21 21:20:06,287 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:3 пропущена
+2026-09-21 21:20:06,289 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:4 пропущена
+2026-09-21 21:20:06,294 WARNING Некорректная запись C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log:5 пропущена
+2026-09-21 21:20:06,303 INFO C:\Users\Anzherus\Desktop\Подготовка к собесу\Project_practical\logs\application.log: пропущено 301 некорректных строк
+2026-09-21 21:20:06,620 INFO Benchmark: Asyncio — 0.35 сек (100000 записей)
+2026-09-21 21:20:06,621 INFO Результаты бенчмарка: {'Threads': 0.3449432999987039, 'Sequential': 0.3449672999995528, 'Multiprocessing': 1.9640347000022302, 'Asyncio': 0.35428440000032424}
+2026-09-21 21:20:25,737 INFO Watch mode старт (интервал 5.0 сек)
+2026-09-21 21:20:25,738 INFO Watch: исходно видно 51 файлов
+2026-09-21 21:20:31,437 INFO Watch mode остановлен
+2026-09-21 21:20:32,968 INFO Приложение завершено

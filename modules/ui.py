@@ -1,82 +1,73 @@
-"""Модуль пользовательского интерфейса для System Monitor"""
 import logging
-from typing import List
+from typing import Dict
+
 from config import Settings
-from modules.servers import ServerManager
 from modules.logs import LogManager
-from modules.analyzer import NumericAnalyzer, AnomalyDetector
-from modules.reports import ReportGenerator
-from modules.statistics import PandasAnalyzer
+from modules.pipeline import build_pandas, save_all_reports
+from modules.servers import ServerManager, compute_priority
 from utils.display import header, table
-from utils.helpers import timer
+from utils.helpers import (
+    LogRecordIterator, format_error, format_record, severity_total, timer,
+)
 
 logger = logging.getLogger(__name__)
 
 
-def show_records(lm: LogManager, predicate, limit: int = 50) -> None:
-    """Показать записи логов с фильтрацией"""
+# Логи
+def show_records(lm: LogManager, predicate, limit: int = 50,
+                 mark_errors: bool = False) -> None:
     shown = 0
     for r in lm.iter_records():
         if predicate(r):
-            print(f"{r['date']} {r['time']} | {r['server']:>10} | {r['level']:<8} | {r['message']}")
+            if mark_errors and r["level"] in ("ERROR", "CRITICAL"):
+                print(format_error(r))
+            else:
+                print(format_record("", r))
             shown += 1
             if shown >= limit:
                 print(f"... (лимит {limit})")
                 break
 
 
-def menu_servers(sm: ServerManager) -> None:
-    """Меню управления серверами"""
+def browse_paginated(lm: LogManager, page_size: int = 20) -> None:
+    it = LogRecordIterator(lm.iter_records(), page_size=page_size)
+    page_no = 1
     while True:
-        header("СЕРВЕРЫ")
-        print("1) Все серверы\n2) Активные серверы\n3) Проблемные серверы\n4) Поиск сервера\n5) Информация о сервере\n0) Назад")
-        c = input("> ").strip()
-        if c == "0":
+        print(f"\n страница {page_no} (по {page_size}) ")
+        got = 0
+        try:
+            for _ in range(page_size):
+                r = next(it)
+                print(format_record("", r))
+                got += 1
+        except StopIteration:
+            print("(конец логов)")
             return
-        elif c == "1":
-            table([[s.id, s.name, s.os, s.ip, s.cpu, s.ram, s.status]
-                   for s in sm.all()],
-                  headers=["ID", "Имя", "ОС", "IP", "CPU", "RAM", "Статус"])
-        elif c == "2":
-            table([[s.id, s.name, s.status] for s in sm.active()],
-                  headers=["ID", "Имя", "Статус"])
-        elif c == "3":
-            print("Проблемные серверы рассчитываются после Анализа (Статистика -> по серверам).")
-        elif c == "4":
-            q = input("Запрос: ").strip()
-            for s in sm.find(q):
-                print(f"{s.id}: {s.name} ({s.ip}) - {s.status}")
-        elif c == "5":
-            name = input("Имя сервера: ").strip()
-            s = sm.get_by_name(name)
-            if s:
-                print(f"\nСервер {s.name}:")
-                print(f"  ID: {s.id}")
-                print(f"  ОС: {s.os}")
-                print(f"  IP: {s.ip}")
-                print(f"  Окружение: {s.environment}")
-                print(f"  CPU: {s.cpu}")
-                print(f"  RAM: {s.ram}")
-                print(f"  Статус: {s.status}")
-            else:
-                print("Не найдено")
+        if got == 0:
+            print("(нет данных)")
+            return
+        if input("[Enter] далее | [q] выход: ").strip().lower() == "q":
+            return
+        page_no += 1
 
 
 def menu_logs(lm: LogManager) -> None:
-    """Меню работы с логами"""
     while True:
-        header("ЛОГИ")
-        print("1) Все записи\n2) Только ERROR\n3) Только CRITICAL\n4) Только WARNING\n"
-              "5) Поиск по сообщению\n6) Поиск по серверу\n7) Поиск по дате\n0) Назад")
+        header("Логи")
+        print("1) Все записи\n2) Только ERROR\n3) Только CRITICAL\n"
+              "4) Только WARNING\n5) Поиск по сообщению\n6) Поиск по серверу\n"
+              "7) Поиск по дате\n8) Постраничный просмотр\n0) Назад")
         c = input("> ").strip()
         if c == "0":
             return
         if c == "1":
             show_records(lm, lambda r: True)
         elif c == "2":
-            show_records(lm, lambda r: r["level"] == "ERROR")
+            show_records(lm, lambda r: r["level"] == "ERROR",
+                         mark_errors=True)
         elif c == "3":
-            show_records(lm, lambda r: r["level"] == "CRITICAL")
+            show_records(lm, lambda r: r["level"] == "CRITICAL",
+                         mark_errors=True)
         elif c == "4":
             show_records(lm, lambda r: r["level"] == "WARNING")
         elif c == "5":
@@ -88,151 +79,218 @@ def menu_logs(lm: LogManager) -> None:
         elif c == "7":
             q = input("Дата (ГГГГ-ММ-ДД): ").strip()
             show_records(lm, lambda r: r["date"] == q)
+        elif c == "8":
+            try:
+                ps = int(input("Размер страницы [20]: ") or 20)
+            except ValueError:
+                ps = 20
+            browse_paginated(lm, ps)
         else:
             print("Неизвестная опция.")
 
 
-def run_analysis(sm: ServerManager, lm: LogManager, settings: Settings = None):
-    """Запустить анализ данных"""
-    logger.info("Начало анализа")
-    num = NumericAnalyzer()
-    threshold = settings.anomaly_threshold if settings else 3.0
-    det = AnomalyDetector(threshold)
-    records = []
-    level_counts = {"INFO": 0, "WARNING": 0, "ERROR": 0, "CRITICAL": 0}
-    
-    with timer("Последовательный парсинг"):
+# Сервера
+def menu_servers(sm: ServerManager, lm: LogManager = None) -> None:
+    while True:
+        header("Серверы")
+        print("1) Все серверы\n2) Активные серверы\n3) Проблемные серверы\n"
+              "4) Поиск сервера\n5) Информация о сервере\n0) Назад")
+        c = input("> ").strip()
+        if c == "0":
+            return
+        if c == "1":
+            table([[s.id, s.name, s.os, s.ip, s.cpu, s.ram, s.status]
+                   for s in sm.all()],
+                  headers=["ID", "Имя", "ОС", "IP", "CPU", "RAM", "Статус"])
+        elif c == "2":
+            table([[s.id, s.name, s.status] for s in sm.active()],
+                  headers=["ID", "Имя", "Статус"])
+        elif c == "3":
+            if lm is None:
+                print("LogManager недоступен.")
+                continue
+            _problem_servers_from_lm(lm)
+        elif c == "4":
+            q = input("Запрос: ").strip()
+            for s in sm.find(q):
+                print(f"{s.id}: {s.name} ({s.ip}) - {s.status}")
+        elif c == "5":
+            name = input("Имя сервера: ").strip()
+            s = sm.get_by_name(name)
+            if s:
+                print(f"\nСервер {s.name}:")
+                for k in ("id", "os", "ip", "environment", "cpu", "ram",
+                          "status"):
+                    print(f"  {k}: {getattr(s, k)}")
+            else:
+                print("Не найдено")
+
+
+def _problem_servers_from_lm(lm: LogManager, top: int = 20) -> None:
+    counts: Dict[str, Dict[str, int]] = {}
+    with timer("Сканирование логов"):
         for r in lm.iter_records():
-            records.append(r)
-            level_counts[r["level"]] = level_counts.get(r["level"], 0) + 1
-            num.feed(r)
-            det.feed(r)
-    
-    numeric = num.result()
-    anomalies = det.detect()
-    logger.info("Обработано %d записей", len(records))
-    logger.info("Найдено %d аномалий", len(anomalies))
-    
-    print("\nУРОВНИ ЛОГИРОВАНИЯ")
-    for k, v in level_counts.items():
-        print(f"{k}: {v}")
-    
-    print("\nНАГРУЗКА (NumPy)")
-    for k, stats in numeric.items():
-        print(f"{k.upper():<5} среднее={stats['mean']:.2f} мин={stats['min']:.0f} макс={stats['max']:.0f} "
-              f"медиана={stats['median']:.2f} ст.отклон={stats['std']:.2f}")
-    
-    print(f"\nАномалий обнаружено: {len(anomalies)}")
-    
-    logger.info("Анализ завершен")
-    return records, numeric, anomalies
+            s = r["server"]
+            d = counts.setdefault(
+                s, {"total": 0, "errors": 0, "critical": 0, "warnings": 0})
+            d["total"] += 1
+            lvl = r["level"]
+            if lvl == "ERROR":
+                d["errors"] += 1
+            elif lvl == "CRITICAL":
+                d["critical"] += 1
+            elif lvl == "WARNING":
+                d["warnings"] += 1
+
+    rows = []
+    for name, d in counts.items():
+        pr = compute_priority(d["errors"], d["critical"],
+                              d["warnings"], d["total"]).value
+        score = d["critical"] * 3 + d["errors"] * 2 + d["warnings"]
+        rows.append((score, name, d, pr))
+    rows.sort(reverse=True)
+    table([[name, d["errors"], d["critical"], d["warnings"], pr]
+           for _, name, d, pr in rows[:top]],
+          headers=["Сервер", "ERROR", "CRITICAL", "WARNING", "Приоритет"])
 
 
-def menu_statistics(records, numeric, anomalies, sm: ServerManager) -> None:
-    """Меню статистики"""
-    header("СТАТИСТИКА")
-    print("1) Общая\n2) По серверам\n3) По датам\n4) По уровням\n5) Нагрузка\n6) Аномалии\n0) Назад")
-    c = input("> ").strip()
-    if c == "0":
-        return
-    
-    pa = PandasAnalyzer()
-    pa.build(records)
-    
-    if c == "1":
-        total = len(records)
-        print(f"Всего серверов: {len(sm.all())}")
-        print(f"Активных: {len(sm.active())}")
-        print(f"Всего записей: {total}")
-        for k in ("INFO", "WARNING", "ERROR", "CRITICAL"):
-            n = sum(1 for r in records if r["level"] == k)
-            print(f"{k}: {n}")
-    elif c == "2":
-        df = pa.by_server()
-        print(df.to_string(index=False) if not df.empty else "(нет данных)")
-    elif c == "3":
-        df = pa.by_date()
-        print(df.to_string(index=False) if not df.empty else "(нет данных)")
-    elif c == "4":
-        df = pa.by_level()
-        print(df.to_string(index=False) if not df.empty else "(нет данных)")
-    elif c == "5":
-        for k, s in numeric.items():
-            print(f"{k.upper():<5} среднее={s['mean']:.2f} ст.отклон={s['std']:.2f}")
-    elif c == "6":
-        print(f"Аномалий: {len(anomalies)}")
-        for a in anomalies[:20]:
-            print(f"Сервер: {a['server']}, Метрика: {a['metric']}, "
-                  f"Значение: {a['value']}, Z-оценка: {a['z_score']}")
+#  Статистика
+def menu_statistics(analysis: dict, sm: ServerManager) -> None:
+    pa = build_pandas(analysis)
+    while True:
+        header("Статистика")
+        print("1) Общая\n2) По серверам\n3) По датам\n4) По уровням\n"
+              "5) Нагрузка\n6) Аномалии\n"
+              "7) Проблемные серверы (Pandas + приоритет)\n"
+              "8) Топ-10 сообщений об ошибках\n9) Сводка по часам\n"
+              "10) Сводные метрики (describe)\n0) Назад")
+        c = input("> ").strip()
+        if c == "0":
+            return
+
+        if c == "1":
+            print(f"Всего серверов: {len(sm.all())}")
+            print(f"Активных: {len(sm.active())}")
+            print(f"Всего записей: {analysis['total_records']}")
+            for k, v in analysis["level_counts"].items():
+                print(f"  {k}: {v}")
+            print(f"Суммарный 'вес' серьёзности: "
+                  f"{severity_total(analysis['level_counts'])}")
+        elif c == "2":
+            df = pa.by_server(top=50)
+            table(df.values.tolist(),
+                  headers=[c_.replace("_", " ").title() for c_ in df.columns])
+        elif c == "3":
+            df = pa.by_date()
+            table(df.values.tolist(), headers=["Дата", "Записей"])
+        elif c == "4":
+            df = pa.by_level()
+            table(df.values.tolist(), headers=["Уровень", "Записей"])
+        elif c == "5":
+            if not analysis["numeric"]:
+                print("(нет числовых метрик)")
+            else:
+                for k, s in analysis["numeric"].items():
+                    print(f"{k.upper():<5} среднее={s['mean']:.2f} "
+                          f"мин={s['min']:.0f} макс={s['max']:.0f} "
+                          f"медиана={s['median']:.2f} "
+                          f"ст.отклон={s['std']:.2f}")
+        elif c == "6":
+            print(f"Аномалий: {len(analysis['anomalies'])}")
+            for a in analysis["anomalies"][:30]:
+                print(f"  {a['timestamp']} | {a['server']:>12} | "
+                      f"{a['metric']:<5} = {a['value']:>6} | "
+                      f"z={a['z_score']}")
+        elif c == "7":
+            df = pa.problem_servers(top=20)
+            if df.empty:
+                print("(нет данных)")
+            else:
+                table(df.values.tolist(),
+                      headers=[c_.replace("_", " ").title()
+                               for c_ in df.columns])
+        elif c == "8":
+            df = pa.top_error_messages(10)
+            table(df.values.tolist(), headers=["Сообщение", "Кол-во"])
+        elif c == "9":
+            df = pa.by_time_period()
+            rows = [[f"{h}:00-{int(h) + 1:02d}:00", n]
+                    for h, n in df.values.tolist()]
+            table(rows, headers=["Период", "Записей"])
+        elif c == "10":
+            d = pa.describe()
+            if not d:
+                print("(нет данных)")
+            else:
+                for stat, vals in d.items():
+                    print(f"  {stat}: {vals}")
+        else:
+            print("Неизвестная опция.")
 
 
-def _build_text_report(summary: dict, anomalies) -> str:
-    """Создать текстовый отчет"""
-    lines = ["ОТЧЕТ SYSTEM MONITOR".center(60)]
-    lines.append("\nОБЩАЯ ИНФОРМАЦИЯ")
-    for k, v in summary.items():
-        if k != "load":
-            lines.append(f"  {k}: {v}")
-    lines.append("\nНАГРУЗКА")
-    for m, s in summary.get('load', {}).items():
-        lines.append(f"  {m.upper():<5} среднее={s['mean']:.2f} мин={s['min']:.0f} "
-                     f"макс={s['max']:.0f} ст.отклон={s['std']:.2f}")
-    lines.append(f"\nАНОМАЛИЙ: {len(anomalies)}")
-    return "\n".join(lines)
-
-
-def menu_reports(records, numeric, anomalies, sm: ServerManager, settings: Settings = None) -> None:
-    """Меню отчетов"""
-    header("ОТЧЕТЫ")
+#  Репорты
+def menu_reports(analysis: dict, sm: ServerManager,
+                 settings: Settings = None) -> None:
+    header("Отчёты")
     print("1) Сохранить все отчеты\n0) Назад")
-    c = input("> ").strip()
-    if c != "1":
+    if input("> ").strip() != "1":
         return
-    
     if settings is None:
         print("Настройки не заданы")
         return
-    rg = ReportGenerator(settings)
-    summary = {
-        "total_servers": len(sm.all()),
-        "active_servers": len(sm.active()),
-        "total_records": len(records),
-        "levels": {k: sum(1 for r in records if r["level"] == k) 
-                  for k in ("INFO", "WARNING", "ERROR", "CRITICAL")},
-        "load": numeric,
-        "anomalies_count": len(anomalies),
-    }
-    
-    rg.save_summary(summary)
-    rg.save_errors([r for r in records if r["level"] == "ERROR"])
-    
-    pa = PandasAnalyzer()
-    pa.build(records)
-    if not pa.df.empty:
-        rg.save_servers_csv(pa.by_server())
-        rg.save_statistics_csv(pa.by_level())
-    
-    rg.save_text_report(_build_text_report(summary, anomalies))
+    save_all_reports(analysis, sm, settings)
     print("Отчеты сохранены.")
 
 
-def menu_settings(settings) -> None:
-    """Меню настроек"""
-    header("НАСТРОЙКИ")
-    print(f"Макс. потоков: {settings.max_threads}")
-    print(f"Процессов: {settings.processes}")
-    print(f"Порог аномалий: {settings.anomaly_threshold}")
-    print(f"Тест. серверов: {settings.test_servers}")
-    print(f"Тест. логов: {settings.test_logs}")
-    
-    if input("Изменить? (y/n): ").strip().lower() == "y":
-        try:
-            settings.max_threads = int(input("Макс. потоков: "))
-            settings.processes = int(input("Процессов: "))
-            settings.anomaly_threshold = float(input("Порог аномалий: "))
-            settings.test_servers = int(input("Тест. серверов: "))
-            settings.test_logs = int(input("Тест. логов: "))
-            settings.save()
-            print("Сохранено.")
-        except ValueError:
-            print("Неверный ввод. Не сохранено.")
+# Настройка
+def _ask_int(prompt: str, current: int, min_val: int = 1) -> int:
+    raw = input(f"{prompt} [{current}]: ").strip()
+    if not raw:
+        return current
+    v = int(raw)
+    if v < min_val:
+        raise ValueError(f"{prompt} должно быть >= {min_val}")
+    return v
+
+
+def _ask_float(prompt: str, current: float, min_val: float = 0.1) -> float:
+    raw = input(f"{prompt} [{current}]: ").strip()
+    if not raw:
+        return current
+    v = float(raw)
+    if v < min_val:
+        raise ValueError(f"{prompt} должно быть >= {min_val}")
+    return v
+
+
+def menu_settings(settings: Settings) -> None:
+    header("Настройки")
+    for name in ("max_threads", "processes", "anomaly_threshold",
+                 "test_servers", "test_logs",
+                 "logs_path", "data_path", "reports_path"):
+        print(f"  {name}: {getattr(settings, name)}")
+
+    if input("Изменить? (y/n): ").strip().lower() != "y":
+        return
+    try:
+        settings.max_threads = _ask_int(
+            "Макс. потоков", settings.max_threads, 1)
+        settings.processes = _ask_int(
+            "Процессов", settings.processes, 1)
+        settings.anomaly_threshold = _ask_float(
+            "Порог аномалий", settings.anomaly_threshold, 0.1)
+        settings.test_servers = _ask_int(
+            "Тест. серверов", settings.test_servers, 1)
+        settings.test_logs = _ask_int(
+            "Тест. логов", settings.test_logs, 1)
+        for field, label in (("logs_path", "логам"),
+                             ("data_path", "данным"),
+                             ("reports_path", "отчётам")):
+            v = input(f"Путь к {label} "
+                      f"[{getattr(settings, field)}]: ").strip()
+            if v:
+                setattr(settings, field, v)
+        settings.save()
+        print("Сохранено.")
+    except ValueError as exc:
+        print(f"Неверный ввод: {exc}. Не сохранено.")
