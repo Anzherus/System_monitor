@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 MAX_ERROR_RECORDS_FOR_FLOOD = 200_000
 
 
-def run_analysis(sm: ServerManager, lm: LogManager,settings: Settings = None) -> dict:
+def run_analysis(sm: ServerManager, lm: LogManager,settings: Settings = None):
     logger.info("Начало анализа")
     num = NumericAnalyzer()
     psn = PerServerNumericAnalyzer()
@@ -109,7 +109,7 @@ def run_analysis(sm: ServerManager, lm: LogManager,settings: Settings = None) ->
     }
 
 
-def build_pandas(analysis: dict) -> PandasAnalyzer:
+def build_pandas(analysis):
     pa = PandasAnalyzer()
     pa.build(
         per_server=analysis["per_server"],
@@ -122,12 +122,11 @@ def build_pandas(analysis: dict) -> PandasAnalyzer:
     return pa
 
 
-def _is_valid_float(v) -> bool:
+def _is_valid_float(v):
     return v is not None and not (isinstance(v, float) and pd.isna(v))
 
 
-def build_text_report(analysis: dict, sm: ServerManager,
-                      problem_df) -> str:
+def build_text_report(analysis, sm: ServerManager, problem_df):
     lines = ["Отчёт System Monitor".center(60)]
     lines.append("\nОбщая информация")
     lines.append(f"  Всего серверов:   {len(sm.all())}")
@@ -180,8 +179,7 @@ def build_text_report(analysis: dict, sm: ServerManager,
     return "\n".join(lines)
 
 
-def save_all_reports(analysis: dict, sm: ServerManager,
-                     settings: Settings) -> None:
+def save_all_reports(analysis, sm: ServerManager,settings: Settings):
     rg = ReportGenerator(settings)
     pa = build_pandas(analysis)
 

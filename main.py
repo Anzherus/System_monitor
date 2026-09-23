@@ -32,7 +32,7 @@ ensure_dirs(settings)
 _file_handler = None
 
 
-def setup_file_handler(s: Settings) -> None:
+def setup_file_handler(s: Settings):
     """Перевешивает FileHandler на актуальный logs_path."""
     global _file_handler
     if _file_handler is not None:
@@ -51,7 +51,7 @@ setup_file_handler(settings)
 
 
 
-def _quick_scan(path: str) -> dict:
+def _quick_scan(path):
     """Быстрый проход по одному файлу: счётчики по уровням."""
     from modules.parser import iter_log_file
     counts = {"total": 0, "INFO": 0, "WARNING": 0, "ERROR": 0, "CRITICAL": 0}
@@ -62,7 +62,7 @@ def _quick_scan(path: str) -> dict:
     return counts
 
 
-async def _watch_loop(logs_path: str, interval: float) -> None:
+async def _watch_loop(logs_path, interval):
     """Периодически проверяет появление новых лог-файлов."""
     pattern = os.path.join(logs_path, "*.log")
     seen = set(glob.glob(pattern))
@@ -81,7 +81,7 @@ async def _watch_loop(logs_path: str, interval: float) -> None:
         seen = current
 
 
-def watch_mode(settings: Settings, interval: float = 5.0) -> None:
+def watch_mode(settings: Settings, interval: float = 5.0):
     print(f"\nНаблюдение за {settings.logs_path} (Ctrl+C — выход).")
     logger.info("Watch mode старт (интервал %.1f сек)", interval)
     try:
@@ -93,7 +93,7 @@ def watch_mode(settings: Settings, interval: float = 5.0) -> None:
 
 
 
-def main() -> None:
+def main():
     logger.info("Приложение запущено")
 
     sm = ServerManager(settings)

@@ -18,7 +18,7 @@ _PREFIXES: Tuple[Tuple[str, str], ...] = (
 )
 
 
-def extract_metrics(message: str) -> Dict[str, float]:
+def extract_metrics(message):
     out: Dict[str, float] = {}
     for prefix, key in _PREFIXES:
         pos = message.find(prefix)
@@ -43,18 +43,18 @@ class _Welford:
         self.mean = 0.0
         self.M2 = 0.0
 
-    def update(self, x: float) -> None:
+    def update(self, x):
         self.n += 1
         delta = x - self.mean
         self.mean += delta / self.n
         self.M2 += delta * (x - self.mean)
 
     @property
-    def variance(self) -> float:
+    def variance(self):
         return self.M2 / self.n if self.n > 1 else 0.0
 
     @property
-    def std(self) -> float:
+    def std(self):
         return math.sqrt(self.variance)
 
 
@@ -64,11 +64,11 @@ class NumericAnalyzer:
     def __init__(self):
         self.buffers: Dict[str, array] = {m: array("d") for m in self.METRICS}
 
-    def feed(self, record: dict) -> None:
+    def feed(self, record):
         for k, v in extract_metrics(record.get("message", "")).items():
             self.buffers[k].append(v)
 
-    def result(self) -> Dict[str, dict]:
+    def result(self):
         out = {}
         for m, buf in self.buffers.items():
             if not buf:
@@ -92,7 +92,7 @@ class PerServerNumericAnalyzer:
     def __init__(self):
         self._stats: Dict[str, Dict[str, _Welford]] = {}
 
-    def feed(self, record: dict) -> None:
+    def feed(self, record):
         metrics = extract_metrics(record.get("message", ""))
         if not metrics:
             return
@@ -104,7 +104,7 @@ class PerServerNumericAnalyzer:
         for m, v in metrics.items():
             srv_stats[m].update(v)
 
-    def per_server(self) -> Dict[str, Dict[str, dict]]:
+    def per_server(self):
         out: Dict[str, Dict[str, dict]] = {}
         for srv, metrics in self._stats.items():
             entry: Dict[str, dict] = {}
@@ -129,7 +129,7 @@ class AnomalyDetector:
         self._stats: Dict[Tuple[str, str], _Welford] = {}
         self._anomalies: List[dict] = []
 
-    def feed(self, record: dict) -> None:
+    def feed(self, record):
         server = record.get("server", "?")
         ts_iso = record["timestamp"].isoformat()
         for m, v in extract_metrics(record.get("message", "")).items():
@@ -151,10 +151,10 @@ class AnomalyDetector:
                     })
             w.update(v)
 
-    def result(self) -> List[dict]:
+    def result(self):
         return self._anomalies
 
-    def stats_summary(self) -> Dict[str, Dict[str, dict]]:
+    def stats_summary(self):
         out: Dict[str, Dict[str, dict]] = {}
         for (srv, metric), w in self._stats.items():
             out.setdefault(srv, {})[metric] = {

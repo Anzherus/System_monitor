@@ -31,7 +31,7 @@ ERROR_MSGS = [
 METRIC_NAMES = ["CPU usage", "Memory usage", "Disk usage", "Network throughput"]
 
 
-def _weighted_choice(pairs) -> str:
+def _weighted_choice(pairs):
     total = sum(w for _, w in pairs)
     r = random.randint(1, total)
     acc = 0
@@ -42,14 +42,14 @@ def _weighted_choice(pairs) -> str:
     return pairs[-1][0]
 
 
-def _metric_value() -> int:
+def _metric_value():
     
     if random.random() < 0.01:
         return random.randint(90, 100)
     return max(1, min(89, int(random.gauss(50, 15))))
 
 
-def generate_servers(settings: Settings, count: int = None) -> List[Server]:
+def generate_servers(settings: Settings, count: int = None):
     count = count or settings.test_servers
     servers = []
     for i in range(1, count + 1):
@@ -66,7 +66,7 @@ def generate_servers(settings: Settings, count: int = None) -> List[Server]:
     return servers
 
 
-def _make_line(ts: datetime, server: str, error_bias: float = 1.0) -> str:
+def _make_line(ts: datetime, server: str, error_bias: float = 1.0):
     level = _weighted_choice([
         ("INFO", 820),
         ("WARNING", 130),
@@ -84,10 +84,7 @@ def _make_line(ts: datetime, server: str, error_bias: float = 1.0) -> str:
     return f"{ts.strftime('%Y-%m-%d %H:%M:%S')} | {server} | {level} | {msg}"
 
 
-def generate_logs(settings: Settings,
-                  servers: List[Server],
-                  total_records: int = None,
-                  files: int = None) -> int:
+def generate_logs(settings: Settings, servers: List[Server], total_records: int = None, files: int = None):
     total_records = total_records or settings.test_logs
     files = max(1, files or len(servers))
     os.makedirs(settings.logs_path, exist_ok=True)
@@ -128,8 +125,7 @@ def generate_logs(settings: Settings,
     return written
 
 
-def generate_infrastructure(settings, servers_count=None,
-                            logs_count=None, files_count=None):
+def generate_infrastructure(settings, servers_count=None, logs_count=None, files_count=None):
     mgr = ServerManager(settings)
     mgr.servers = generate_servers(settings, servers_count)
     mgr.save()

@@ -1,9 +1,3 @@
-"""Базовые тесты ядра System Monitor. Запуск: pytest -q
-
-Файл работает и при расположении в tests/, и в корне проекта:
-если родительская директория называется tests/test — sys.path
-добавляется на уровень выше.
-"""
 import os
 import sys
 from datetime import datetime
@@ -19,8 +13,6 @@ else:
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-
-# --- предметные импорты ---
 import pandas as pd
 from modules.parser import parse_log_line, iter_log_file, parse_log_file
 from modules.analyzer import (
@@ -35,9 +27,7 @@ from utils.helpers import (
 )
 
 
-# ===================================================================
-#                          PARSER
-# ===================================================================
+#PARSER
 
 def test_parse_valid_line():
     line = "2026-09-12 10:15:21 | server_01 | INFO | CPU usage: 43"
@@ -51,7 +41,6 @@ def test_parse_valid_line():
 
 
 def test_parse_line_with_pipe_in_message():
-    """Сообщение может содержать '|' — split(maxsplit=3) должен сохранить хвост."""
     line = "2026-09-12 10:15:21 | s1 | ERROR | a | b | c"
     rec = parse_log_line(line)
     assert rec is not None
@@ -64,9 +53,7 @@ def test_parse_invalid_lines():
     assert parse_log_line("garbage") is None
     assert parse_log_line("2026-99-99 10:15:21 | x | INFO | msg") is None
     assert parse_log_line("2026-09-12 10:15:21 | x | NOT_A_LEVEL | msg") is None
-    # Неправильные разделители
     assert parse_log_line("2026/09/12 10:15:21 | x | INFO | msg") is None
-    # Меньше 4 полей
     assert parse_log_line("2026-09-12 10:15:21 | x | INFO") is None
 
 
@@ -83,7 +70,6 @@ def test_parse_level_case_insensitive():
 
 
 def test_parse_log_file_missing_file_returns_empty(tmp_path):
-    """Отсутствующий файл → [] без исключения."""
     missing = str(tmp_path / "nope.log")
     assert parse_log_file(missing) == []
 
@@ -103,9 +89,7 @@ def test_iter_log_file_skips_garbage(tmp_path):
     assert records[1]["level"] == "ERROR"
 
 
-# ===================================================================
-#                         VALIDATORS
-# ===================================================================
+#VALIDATE
 
 def test_validate_server_ok():
     ok, err = validate_server({
@@ -151,9 +135,7 @@ def test_validate_log_line_bad_level():
     assert "уровень" in err.lower() or "level" in err.lower() or "TRACE" in err
 
 
-# ===================================================================
-#                    ANALYZER: extract_metrics
-# ===================================================================
+# ANALIZER
 
 def test_extract_metrics_single():
     assert extract_metrics("CPU usage: 43") == {"cpu": 43.0}
@@ -175,7 +157,6 @@ def test_extract_metrics_all_four():
 
 
 def test_extract_metrics_no_false_positive_inside_word():
-    """'XCPU usage: 5' не должно дать cpu=5."""
     assert extract_metrics("XCPU usage: 5") == {}
 
 
@@ -188,9 +169,7 @@ def test_extract_metrics_numeric_value():
     assert extract_metrics("CPU usage: 43.7") == {"cpu": 43.0}
 
 
-# ===================================================================
-#                    ANALYZER: NumericAnalyzer
-# ===================================================================
+#NUMERIC_ANALYZER
 
 def test_numeric_analyzer():
     na = NumericAnalyzer()
@@ -219,9 +198,7 @@ def test_numeric_analyzer_multiple_metrics():
     assert res["ram"]["mean"] == 30.0
 
 
-# ===================================================================
-#                    ANALYZER: AnomalyDetector
-# ===================================================================
+# ANOMALY_DEECTOR
 
 def test_anomaly_detector_finds_outlier():
     det = AnomalyDetector(threshold=2.0, min_samples=5)
@@ -251,7 +228,6 @@ def test_anomaly_detector_no_anomalies_on_uniform():
     for _ in range(20):
         det.feed({"message": "CPU usage: 50", "server": "s1",
                   "timestamp": ts})
-    # std=0 → ложных срабатываний быть не должно
     assert det.result() == []
 
 
@@ -268,7 +244,6 @@ def test_anomaly_detector_stats_summary():
 
 
 def test_anomaly_detector_per_server_isolation():
-    """Один шумный сервер не должен портить статистику другого."""
     det = AnomalyDetector(threshold=2.0, min_samples=3)
     ts = datetime(2026, 1, 1)
     for _ in range(10):
@@ -276,14 +251,8 @@ def test_anomaly_detector_per_server_isolation():
                   "timestamp": ts})
         det.feed({"message": "CPU usage: 10", "server": "s2",
                   "timestamp": ts})
-    # У s1 значение 50 — норма, у s2 значение 50 — аномалия,
-    # но она попала в warmup, поэтому аномалий 0
     assert det.result() == []
 
-
-# ===================================================================
-#              ANALYZER: PerServerNumericAnalyzer (new)
-# ===================================================================
 
 def test_per_server_numeric_analyzer():
     psn = PerServerNumericAnalyzer()
@@ -308,20 +277,17 @@ def test_per_server_numeric_analyzer_ignores_non_metrics():
     assert psn.per_server() == {}
 
 
-# ===================================================================
-#                          PRIORITY
-# ===================================================================
+# PRIORITY
 
 def test_priority_no_total_fallback():
     assert compute_priority(0, 0, 0) == Priority.NORMAL
-    assert compute_priority(10, 0, 0) == Priority.WARNING      # 5 <= 10 < 20
-    assert compute_priority(25, 0, 0) == Priority.HIGH         # 20 <= 25 < 100
-    assert compute_priority(0, 15, 0) == Priority.CRITICAL     # 15 >= 10
-    assert compute_priority(0, 5, 0) == Priority.HIGH          # 1 <= 5 < 10
+    assert compute_priority(10, 0, 0) == Priority.WARNING      
+    assert compute_priority(25, 0, 0) == Priority.HIGH         
+    assert compute_priority(0, 15, 0) == Priority.CRITICAL     
+    assert compute_priority(0, 5, 0) == Priority.HIGH          
 
 
 def test_priority_with_total():
-    # 1000 записей
     assert compute_priority(5, 0, 0, 1000) == Priority.NORMAL
     assert compute_priority(30, 0, 0, 1000) == Priority.WARNING
     assert compute_priority(100, 0, 0, 1000) == Priority.HIGH
@@ -329,25 +295,19 @@ def test_priority_with_total():
 
 
 def test_priority_does_not_degenerate_on_large_total():
-    # 1M записей, 100 ошибок = 0.01% → NORMAL
     assert compute_priority(100, 0, 0, 1_000_000) == Priority.NORMAL
 
 
 def test_priority_critical_rate_boundary():
-    # 1% CRITICAL → ровно порог CRITICAL (0.01)
     assert compute_priority(0, 100, 0, 10_000) == Priority.CRITICAL
-    # 0.5% CRITICAL → HIGH
     assert compute_priority(0, 50, 0, 10_000) == Priority.HIGH
 
 
 def test_priority_warning_rate():
-    # 20% WARNING → WARNING
     assert compute_priority(0, 0, 200, 1000) == Priority.WARNING
 
 
-# ===================================================================
-#                       ITERATOR
-# ===================================================================
+# ITERATOR
 
 def test_log_record_iterator_protocol():
     it = LogRecordIterator(iter([{"x": i} for i in range(5)]), page_size=2)
@@ -357,7 +317,6 @@ def test_log_record_iterator_protocol():
 
 
 def test_log_record_iterator_is_iterable():
-    """object должен возвращать себя из __iter__."""
     it = LogRecordIterator(iter([{"x": 1}]))
     assert iter(it) is it
 
@@ -368,14 +327,11 @@ def test_log_record_iterator_page_size_one():
     assert [r["x"] for r in it] == [1, 2, 3]
 
 
-# ===================================================================
-#                     HELPERS: functools / itertools
-# ===================================================================
+# HELPERS
 
 def test_severity_total_and_cache():
     assert cached_severity_weight("ERROR") == 3
     assert cached_severity_weight("UNKNOWN") == 0
-    # INFO=1*2 + WARNING=2*1 + ERROR=3*3 = 2 + 2 + 9 = 13
     assert severity_total({"INFO": 2, "WARNING": 1, "ERROR": 3}) == 13
 
 
@@ -425,9 +381,7 @@ def test_format_record_and_partial():
     assert format_error(rec).startswith("[ERR]")
 
 
-# ===================================================================
-#                       PANDAS
-# ===================================================================
+
 
 def _sample_records():
     return [
@@ -475,8 +429,6 @@ def test_pandas_top_error_messages():
 def test_pandas_filter_min_errors():
     pa = PandasAnalyzer.from_records(_sample_records())
     df = pa.filter_min_errors(threshold=1)
-    # s1 имеет 1 ERROR, s2 имеет 0 ERRORS но имеет CRITICAL
-    # filter_min_errors фильтрует по количеству ошибок, а не по общему количеству проблем
     assert set(df["server"]) == {"s1"}
 
 
@@ -484,7 +436,6 @@ def test_pandas_problem_servers_has_priority():
     pa = PandasAnalyzer.from_records(_sample_records())
     df = pa.problem_servers()
     assert "priority" in df.columns
-    # s2 = 1 CRITICAL из 2 = 50% → HIGH или CRITICAL
     s2 = df[df["server"] == "s2"].iloc[0]
     assert s2["priority"] in ("HIGH", "CRITICAL")
 
@@ -498,7 +449,6 @@ def test_pandas_describe():
 
 
 def test_pandas_per_server_avg_cpu():
-    """ТЗ п.10: Avg CPU по серверу в Pandas."""
     records = [
         {"date": "2026-01-01", "time": "10:00:00", "server": "s1",
          "level": "INFO", "message": "CPU usage: 50"},
@@ -509,7 +459,6 @@ def test_pandas_per_server_avg_cpu():
     ]
     pa = PandasAnalyzer.from_records(records)
     df = pa.by_server()
-    # Проверяем что колонки avg_cpu добавлены
     assert "avg_cpu" in df.columns
     s1 = df[df["server"] == "s1"].iloc[0]
     assert not pd.isna(s1["avg_cpu"])
@@ -536,18 +485,13 @@ def test_pandas_per_server_avg_ram():
 def test_pandas_empty():
     pa = PandasAnalyzer.from_records([])
     assert pa.by_server().empty
-    # Для пустых данных by_level() возвращает пустой DataFrame
     levels_df = pa.by_level()
     assert levels_df.empty
     assert pa.describe() == {}
 
 
-# ===================================================================
-#                        SMOKE / PATHS
-# ===================================================================
 
 def test_project_root_importable():
-    """Мягкая проверка структуры: modules, utils, config импортируются."""
     import config
     import modules.parser
     import modules.analyzer

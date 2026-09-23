@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 LEVELS = {"INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-def validate_server(data: dict) -> Tuple[bool, Optional[str]]:
+def validate_server(data):
     required = {"id", "name", "os", "ip", "environment", "cpu", "ram", "status"}
     missing = required - set(data.keys())
     if missing:
@@ -23,7 +23,7 @@ def validate_server(data: dict) -> Tuple[bool, Optional[str]]:
     return True, None
 
 
-def validate_log_line(line: str) -> Tuple[bool, Optional[str]]:
+def validate_log_line(line):
     parts = [p.strip() for p in line.split("|")]
     if len(parts) < 4:
         return False, "Недостаточно полей"

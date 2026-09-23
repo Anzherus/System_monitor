@@ -10,15 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class LogRecordIterator:
-    def __init__(self, records: Iterable[dict], page_size: int = 100):
+    def __init__(self, records, page_size: int = 100):
         self._records = iter(records)
         self._page_size = max(1, page_size)
         self._buffer: deque = deque()
 
-    def __iter__(self) -> "LogRecordIterator":
+    def __iter__(self):
         return self
 
-    def __next__(self) -> dict:
+    def __next__(self):
         if not self._buffer:
             chunk = list(itertools.islice(self._records, self._page_size))
             if not chunk:
@@ -27,11 +27,11 @@ class LogRecordIterator:
         return self._buffer.popleft()
 
 
-def chain_files(file_iterables: Iterable[Iterable[dict]]) -> Iterator[dict]:
+def chain_files(file_iterables):
     return itertools.chain.from_iterable(file_iterables)
 
 
-def detect_floods(records: Iterable[dict], min_run: int = 5) -> Iterator[dict]:
+def detect_floods(records, min_run: int = 5):
     key = lambda r: (r.get("server"), r.get("message"))
     for (srv, msg), grp in itertools.groupby(records, key=key):
         n = sum(1 for _ in grp)
@@ -40,11 +40,11 @@ def detect_floods(records: Iterable[dict], min_run: int = 5) -> Iterator[dict]:
 
 
 @functools.lru_cache(maxsize=16)
-def cached_severity_weight(level: str) -> int:
+def cached_severity_weight(level):
     return {"INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}.get(level, 0)
 
 
-def severity_total(level_counts: dict) -> int:
+def severity_total(level_counts):
     return functools.reduce(
         lambda acc, kv: acc + cached_severity_weight(kv[0]) * kv[1],
         level_counts.items(),
@@ -52,7 +52,7 @@ def severity_total(level_counts: dict) -> int:
     )
 
 
-def format_record(prefix: str, record: dict) -> str:
+def format_record(prefix, record):
     base = (f"{record.get('date', '?')} "
             f"{str(record.get('time', '?'))[:8]} | "
             f"{record.get('server', '?'):>12} | "

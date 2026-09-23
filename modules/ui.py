@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Логи
 def show_records(lm: LogManager, predicate, limit: int = 50,
-                 mark_errors: bool = False) -> None:
+                 mark_errors: bool = False):
     shown = 0
     for r in lm.iter_records():
         if predicate(r):
@@ -29,7 +29,7 @@ def show_records(lm: LogManager, predicate, limit: int = 50,
                 break
 
 
-def browse_paginated(lm: LogManager, page_size: int = 20) -> None:
+def browse_paginated(lm: LogManager, page_size: int = 20):
     it = LogRecordIterator(lm.iter_records(), page_size=page_size)
     page_no = 1
     while True:
@@ -51,7 +51,7 @@ def browse_paginated(lm: LogManager, page_size: int = 20) -> None:
         page_no += 1
 
 
-def menu_logs(lm: LogManager) -> None:
+def menu_logs(lm: LogManager):
     while True:
         header("Логи")
         print("1) Все записи\n2) Только ERROR\n3) Только CRITICAL\n"
@@ -90,7 +90,7 @@ def menu_logs(lm: LogManager) -> None:
 
 
 # Сервера
-def menu_servers(sm: ServerManager, lm: LogManager = None) -> None:
+def menu_servers(sm: ServerManager, lm: LogManager = None):
     while True:
         header("Серверы")
         print("1) Все серверы\n2) Активные серверы\n3) Проблемные серверы\n"
@@ -126,7 +126,7 @@ def menu_servers(sm: ServerManager, lm: LogManager = None) -> None:
                 print("Не найдено")
 
 
-def _problem_servers_from_lm(lm: LogManager, top: int = 20) -> None:
+def _problem_servers_from_lm(lm: LogManager, top: int = 20):
     counts: Dict[str, Dict[str, int]] = {}
     with timer("Сканирование логов"):
         for r in lm.iter_records():
@@ -155,7 +155,7 @@ def _problem_servers_from_lm(lm: LogManager, top: int = 20) -> None:
 
 
 #  Статистика
-def menu_statistics(analysis: dict, sm: ServerManager) -> None:
+def menu_statistics(analysis, sm: ServerManager):
     pa = build_pandas(analysis)
     while True:
         header("Статистика")
@@ -229,8 +229,7 @@ def menu_statistics(analysis: dict, sm: ServerManager) -> None:
 
 
 #  Репорты
-def menu_reports(analysis: dict, sm: ServerManager,
-                 settings: Settings = None) -> None:
+def menu_reports(analysis, sm: ServerManager, settings: Settings = None):
     header("Отчёты")
     print("1) Сохранить все отчеты\n0) Назад")
     if input("> ").strip() != "1":
@@ -243,7 +242,7 @@ def menu_reports(analysis: dict, sm: ServerManager,
 
 
 # Настройка
-def _ask_int(prompt: str, current: int, min_val: int = 1) -> int:
+def _ask_int(prompt, current, min_val: int = 1):
     raw = input(f"{prompt} [{current}]: ").strip()
     if not raw:
         return current
@@ -253,7 +252,7 @@ def _ask_int(prompt: str, current: int, min_val: int = 1) -> int:
     return v
 
 
-def _ask_float(prompt: str, current: float, min_val: float = 0.1) -> float:
+def _ask_float(prompt, current, min_val: float = 0.1):
     raw = input(f"{prompt} [{current}]: ").strip()
     if not raw:
         return current
@@ -263,7 +262,7 @@ def _ask_float(prompt: str, current: float, min_val: float = 0.1) -> float:
     return v
 
 
-def menu_settings(settings: Settings) -> None:
+def menu_settings(settings: Settings):
     header("Настройки")
     for name in ("max_threads", "processes", "anomaly_threshold",
                  "test_servers", "test_logs",

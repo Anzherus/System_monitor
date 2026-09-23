@@ -13,7 +13,7 @@ from modules.parallel import (
 logger = logging.getLogger(__name__)
 
 
-def run_benchmark(settings: Settings) -> dict:
+def run_benchmark(settings: Settings):
     files = LogManager(settings.logs_path).files()
     if not files:
         print("Нет файлов логов для тестирования производительности.")

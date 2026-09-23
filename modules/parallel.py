@@ -12,7 +12,7 @@ from modules.parser import iter_log_file
 logger = logging.getLogger(__name__)
 
 
-def _analyze_file(path: str) -> dict:
+def _analyze_file(path):
     total = 0
     cpu_sum = 0.0
     cpu_count = 0
@@ -25,18 +25,18 @@ def _analyze_file(path: str) -> dict:
     return {"total": total, "cpu_sum": cpu_sum, "cpu_count": cpu_count}
 
 
-def _empty() -> dict:
+def _empty():
     return {"total": 0, "cpu_sum": 0.0, "cpu_count": 0}
 
 
-def _merge(agg: dict, res: dict) -> None:
+def _merge(agg, res):
     agg["total"] += res["total"]
     agg["cpu_sum"] += res["cpu_sum"]
     agg["cpu_count"] += res["cpu_count"]
 
 #Принудительно читает файлы для того, чтобы они оказались в оперативной памяти.. для того чтобы они тянулись оттуда а не с диска
 
-def warmup_cache(files: Iterable[str]) -> None:
+def warmup_cache(files):
     for path in files:
         try:
             with open(path, "rb") as f:
@@ -46,14 +46,14 @@ def warmup_cache(files: Iterable[str]) -> None:
             pass
 
 
-def process_sequential(files: Iterable[str]) -> dict:
+def process_sequential(files):
     agg = _empty()
     for path in files:
         _merge(agg, _analyze_file(path))
     return agg
 
 
-def process_threads(files: Iterable[str], workers: int = 8) -> dict:
+def process_threads(files, workers: int = 8):
     files = list(files)
     agg = _empty()
     workers = max(1, int(workers))
@@ -63,13 +63,13 @@ def process_threads(files: Iterable[str], workers: int = 8) -> dict:
     return agg
 
 
-async def _async_analyze(path: str, sem: asyncio.Semaphore) -> dict:
+async def _async_analyze(path, sem: asyncio.Semaphore):
     async with sem:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, _analyze_file, path)
 
 
-async def _async_process(files: List[str], concurrency: int = 8) -> dict:
+async def _async_process(files, concurrency: int = 8):
     sem = asyncio.Semaphore(max(1, int(concurrency)))
     tasks = [asyncio.create_task(_async_analyze(p, sem)) for p in files]
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -82,11 +82,11 @@ async def _async_process(files: List[str], concurrency: int = 8) -> dict:
     return agg
 
 
-def process_asyncio(files: Iterable[str], concurrency: int = 8) -> dict:
+def process_asyncio(files, concurrency: int = 8):
     return asyncio.run(_async_process(list(files), concurrency))
 
 
-def process_multiprocessing(files: Iterable[str], workers: int = 4) -> dict:
+def process_multiprocessing(files, workers: int = 4):
     files = list(files)
     workers = max(1, int(workers))
     agg = _empty()

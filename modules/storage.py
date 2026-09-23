@@ -4,7 +4,7 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
-def load_json(path: str) -> Optional[Any]:
+def load_json(path):
     if not os.path.exists(path):
         logger.warning("Файл не найден: %s", path)
         return None
@@ -19,7 +19,7 @@ def load_json(path: str) -> Optional[Any]:
         return None
 
 
-def save_json(path: str, data: Any) -> bool:
+def save_json(path, data: Any):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     try:
         with open(path, "w", encoding="utf-8") as f:

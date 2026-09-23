@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 _LEVELS = {"INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-def _parse_timestamp(s: str) -> Optional[datetime]: 
+def _parse_timestamp(s): 
     if len(s) < 19:
         return None
     if s[4] != "-" or s[7] != "-" or s[10] != " " or s[13] != ":" or s[16] != ":":
@@ -21,7 +21,7 @@ def _parse_timestamp(s: str) -> Optional[datetime]:
         return None
 
 
-def parse_log_line(line: str) -> Optional[dict]:
+def parse_log_line(line):
     line = line.strip()
     if not line:
         return None
@@ -47,7 +47,7 @@ def parse_log_line(line: str) -> Optional[dict]:
     }
 
 
-def iter_log_file(path: str) -> Iterator[dict]:
+def iter_log_file(path):
     skipped = 0
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as f:
@@ -67,5 +67,5 @@ def iter_log_file(path: str) -> Iterator[dict]:
         logger.info("%s: пропущено %d некорректных строк", path, skipped)
 
 
-def parse_log_file(path: str) -> list:
+def parse_log_file(path):
     return list(iter_log_file(path))

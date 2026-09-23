@@ -9,10 +9,7 @@ from modules.servers import ServerManager
 logger = logging.getLogger(__name__)
 
 
-def run_final_test(settings: Settings,
-                   servers_count: int = 100,
-                   files_count: int = 500,
-                   records_count: int = 1_000_000) -> dict:
+def run_final_test(settings: Settings, servers_count: int = 100, files_count: int = 500, records_count: int = 1_000_000):
     print("Финальный тест".center(60))
     print(f"Серверов: {servers_count}")
     print(f"Файлов:   {files_count}")
@@ -20,8 +17,7 @@ def run_final_test(settings: Settings,
 
     timings = {}
 
-    logger.info("Финальный тест: генерация %d записей в %d файлах",
-                records_count, files_count)
+    logger.info("Финальный тест: генерация %d записей в %d файлах", records_count, files_count)
     t0 = time.perf_counter()
     generate_infrastructure(settings, servers_count, records_count, files_count)
     timings["generate"] = time.perf_counter() - t0

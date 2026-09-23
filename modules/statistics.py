@@ -23,8 +23,7 @@ class PandasAnalyzer:
         self.hours_df = pd.DataFrame()
         self.errors_df = pd.DataFrame()
 
-    def build(self, per_server, level_counts, per_date, per_hour,
-              error_messages, per_server_numeric=None):
+    def build(self, per_server, level_counts, per_date, per_hour, error_messages, per_server_numeric=None):
         self.servers_df = pd.DataFrame(
             [{"server": s, **d} for s, d in per_server.items()]
         ) if per_server else pd.DataFrame(
@@ -59,7 +58,7 @@ class PandasAnalyzer:
         )
 
     @classmethod
-    def from_records(cls, records: Iterable[dict]) -> "PandasAnalyzer":
+    def from_records(cls, records):
         per_server, level_counts = {}, {}
         per_date, per_hour = {}, {}
         errors = {}
@@ -94,7 +93,7 @@ class PandasAnalyzer:
         return pa
 
     # группировка/сортировка
-    def by_server(self, top: Optional[int] = None) -> pd.DataFrame:
+    def by_server(self, top: Optional[int] = None):
         if self.servers_df.empty:
             return self.servers_df
         df = (self.servers_df
@@ -102,20 +101,20 @@ class PandasAnalyzer:
               .reset_index(drop=True))
         return df.head(top) if top else df
 
-    def by_level(self) -> pd.DataFrame:
+    def by_level(self):
         if self.levels_df.empty:
             return self.levels_df
         return (self.levels_df
                 .sort_values("count", ascending=False)
                 .reset_index(drop=True))
 
-    def by_date(self) -> pd.DataFrame:
+    def by_date(self):
         return self.dates_df.sort_values("date").reset_index(drop=True)
 
-    def by_time_period(self) -> pd.DataFrame:
+    def by_time_period(self):
         return self.hours_df.sort_values("hour").reset_index(drop=True)
 
-    def top_error_messages(self, n: int = 10) -> pd.DataFrame:
+    def top_error_messages(self, n: int = 10):
         if self.errors_df.empty:
             return self.errors_df
         return (self.errors_df
@@ -124,7 +123,7 @@ class PandasAnalyzer:
                 .reset_index(drop=True))
 
     # фильтрация
-    def filter_min_errors(self, threshold: int = 1) -> pd.DataFrame:
+    def filter_min_errors(self, threshold: int = 1):
         if self.servers_df.empty:
             return self.servers_df
         # errors существует
@@ -133,7 +132,7 @@ class PandasAnalyzer:
         return self.servers_df[self.servers_df["errors"] >= threshold]
 
     # статистика и приоритеты
-    def problem_servers(self, top: int = 10) -> pd.DataFrame:
+    def problem_servers(self, top: int = 10):
         if self.servers_df.empty:
             return self.servers_df
         df = self.servers_df.copy()
@@ -148,7 +147,7 @@ class PandasAnalyzer:
                   .head(top)
                   .reset_index(drop=True))
 
-    def describe(self) -> dict:
+    def describe(self):
         if self.servers_df.empty:
             return {}
         cols = [c for c in ("total", "errors", "critical", "warnings")

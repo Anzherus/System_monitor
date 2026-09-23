@@ -17,8 +17,7 @@ class Priority(str, Enum):
     CRITICAL = "CRITICAL"
 
 
-def compute_priority(errors: int, critical: int,
-                     warnings: int, total: int = 0) -> Priority:
+def compute_priority(errors, critical, warnings, total: int = 0):
     if total > 0:
         crit_rate = critical / total
         err_rate = errors / total
@@ -52,7 +51,7 @@ class Server:
     ram: int
     status: str
 
-    def to_dict(self) -> dict:
+    def to_dict(self):
         return asdict(self)
 
 
@@ -62,7 +61,7 @@ class ServerManager:
         self.servers: List[Server] = []
         self.path = f"{settings.data_path}/servers.json"
 
-    def load(self) -> int:
+    def load(self):
         raw = load_json(self.path)
         if not raw:
             return 0
@@ -77,20 +76,20 @@ class ServerManager:
         logger.info("Загружено %d серверов", len(self.servers))
         return len(self.servers)
 
-    def save(self) -> bool:
+    def save(self):
         return save_json(self.path, [s.to_dict() for s in self.servers])
 
-    def all(self) -> List[Server]:
+    def all(self):
         return list(self.servers)
 
-    def active(self) -> List[Server]:
+    def active(self):
         return [s for s in self.servers if s.status == "active"]
 
-    def find(self, query: str) -> List[Server]:
+    def find(self, query):
         q = query.lower()
         return [s for s in self.servers if q in s.name.lower() or q in s.ip.lower()]
 
-    def get_by_name(self, name: str) -> Optional[Server]:
+    def get_by_name(self, name):
         for s in self.servers:
             if s.name == name:
                 return s

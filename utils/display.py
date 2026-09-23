@@ -1,11 +1,11 @@
 from typing import Iterable, Sequence
 
 
-def header(title: str, width: int = 60) -> None:
+def header(title, width: int = 60):
     print(title.center(width))
 
 
-def table(rows: Sequence[Sequence], headers: Sequence[str] = None) -> None:
+def table(rows, headers: Sequence[str] = None):
     if not rows:
         print("(нет данных)")
         return
